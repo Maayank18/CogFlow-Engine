@@ -52,11 +52,15 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+        sans: ['"Outfit"', '"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+        body: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        syne: ['"Syne"', 'sans-serif'],
+        grotesk: ['"Space Grotesk"', 'sans-serif'],
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         editorial: ['"Instrument Serif"', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Menlo', 'monospace'],
+        cursive: ['"Instrument Serif"', 'Georgia', 'serif'],
+        mono: ['"JetBrains Mono"', '"Space Grotesk"', 'monospace'],
       },
       boxShadow: {
         subtle: '0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02)',

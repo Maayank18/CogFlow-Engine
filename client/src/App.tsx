@@ -95,19 +95,26 @@ const AppContent: React.FC = () => {
         {/* Brand header */}
         <div className="h-16 px-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
           <div
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setCurrentView('dashboard')}
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/20">
-              CF
+            <div className="w-8 h-8 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[1.5px] shadow-sm shadow-blue-500/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-full h-full rounded-[14px] bg-slate-900 dark:bg-[#090d16] flex items-center justify-center text-white font-black text-xs tracking-tight">
+                <span className="bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent font-black">
+                  CF
+                </span>
+              </div>
             </div>
             <div>
-              <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white block font-display">
+              <span className="font-display font-extrabold text-[15px] tracking-[-0.03em] text-slate-900 dark:text-white block leading-tight">
                 CogFlow
               </span>
-              <span className="text-[9px] text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wider block -mt-0.5">
-                Calm Precision
-              </span>
+              <div className="flex items-center gap-1.5 mt-0.5 leading-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
+                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold text-teal-600 dark:text-teal-400">
+                  Calm Precision
+                </span>
+              </div>
             </div>
           </div>
 

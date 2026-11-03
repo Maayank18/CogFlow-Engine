@@ -81,44 +81,70 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
       </div>
 
       {/* Floating Modern Pill Navigation Header */}
-      <header className="fixed top-6 inset-x-0 z-50 flex justify-center px-4">
-        <nav className="w-full max-w-5xl rounded-full glass-panel px-6 py-3 flex items-center justify-between shadow-glass">
-          {/* Brand Logo with Radial Shimmer */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/25 tracking-tight">
-              CF
+      <header className="fixed top-5 inset-x-0 z-50 flex justify-center px-4 transition-all duration-300">
+        <nav className="w-full max-w-5xl rounded-full bg-white/80 dark:bg-[#070b14]/85 backdrop-blur-2xl border border-slate-200/80 dark:border-white/[0.08] px-4 sm:px-5 py-2.5 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgb(0,0,0,0.45)] ring-1 ring-black/[0.02] dark:ring-white/[0.04]">
+          {/* Brand Logo with Bespoke Neural Squircle */}
+          <div
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
+            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[1.5px] shadow-sm shadow-blue-500/25 shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-full h-full rounded-[14px] bg-slate-900 dark:bg-[#090d16] flex items-center justify-center text-white font-black text-xs tracking-tight">
+                <span className="bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent font-black">
+                  CF
+                </span>
+              </div>
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
+              <span className="font-display font-extrabold text-[15.5px] tracking-[-0.03em] text-slate-900 dark:text-white leading-none group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">
                 CogFlow
               </span>
-              <span className="text-[9px] uppercase tracking-widest text-teal-600 dark:text-teal-400 font-bold -mt-0.5">
-                Adaptive Intelligence
-              </span>
+              <div className="flex items-center gap-1.5 mt-1 leading-none">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
+                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold text-teal-600 dark:text-teal-400">
+                  Adaptive Intelligence
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Center Navigation Links with Hover Micro-Glow */}
-          <div className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600 dark:text-slate-300">
-            <a href="#philosophy" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
+          {/* Center Navigation Links - Floating Segmented Capsule */}
+          <div className="hidden md:flex items-center gap-1 p-1 rounded-full bg-slate-100/70 dark:bg-white/[0.04] border border-slate-200/50 dark:border-white/[0.06] backdrop-blur-md">
+            <a
+              href="#philosophy"
+              className="px-3.5 py-1.5 rounded-full text-[13px] font-medium tracking-[-0.015em] text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-white/[0.08] transition-all duration-200 hover:shadow-2xs"
+            >
               Philosophy
             </a>
-            <a href="#studios" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
-              5 Studios
+            <a
+              href="#studios"
+              className="px-3.5 py-1.5 rounded-full text-[13px] font-medium tracking-[-0.015em] text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-white/[0.08] transition-all duration-200 hover:shadow-2xs flex items-center gap-1.5"
+            >
+              <span className="w-4 h-4 rounded-full bg-blue-500/10 dark:bg-blue-400/20 text-blue-600 dark:text-cyan-300 text-[10px] font-mono font-bold flex items-center justify-center">
+                5
+              </span>
+              <span>Studios</span>
             </a>
-            <a href="#matrix" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
+            <a
+              href="#matrix"
+              className="px-3.5 py-1.5 rounded-full text-[13px] font-medium tracking-[-0.015em] text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-white/[0.08] transition-all duration-200 hover:shadow-2xs"
+            >
               Adaptive Matrix
             </a>
-            <a href="#privacy" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
-              Privacy Invariant
+            <a
+              href="#privacy"
+              className="px-3.5 py-1.5 rounded-full text-[13px] font-medium tracking-[-0.015em] text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-white/[0.08] transition-all duration-200 hover:shadow-2xs flex items-center gap-1.5"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
+              <span>Privacy Invariant</span>
             </a>
           </div>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
+              className="w-9 h-9 rounded-full bg-slate-100/80 dark:bg-white/[0.05] border border-slate-200/60 dark:border-white/[0.08] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10 transition-all duration-200 active:scale-95 shadow-2xs"
               title="Toggle Light/Dark Theme"
             >
               {resolvedTheme === 'dark' ? (
@@ -130,10 +156,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
 
             <button
               onClick={onStartLearning}
-              className="group inline-flex items-center gap-2 pl-4 pr-2.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95"
+              className="group relative inline-flex items-center gap-2.5 pl-4 pr-1.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 text-[13px] font-semibold tracking-[-0.02em] shadow-sm hover:shadow-lg hover:shadow-blue-500/20 active:scale-95 transition-all duration-200"
             >
               <span>Launch Cockpit</span>
-              <div className="w-6 h-6 rounded-full bg-white/20 dark:bg-black/10 flex items-center justify-center group-hover:rotate-45 transition-transform duration-200">
+              <div className="w-6 h-6 rounded-full bg-white/20 dark:bg-black/10 flex items-center justify-center group-hover:rotate-45 group-hover:bg-blue-600 group-hover:text-white dark:group-hover:bg-blue-600 dark:group-hover:text-white transition-all duration-200">
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </div>
             </button>
