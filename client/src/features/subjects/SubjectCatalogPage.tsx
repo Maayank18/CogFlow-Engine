@@ -5,7 +5,8 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Input } from '../../components/ui/Input';
-import { FALLBACK_CURRICULUM_CATALOG, CatalogSubjectWithTopics } from './catalogData';
+import { getMergedCurriculumCatalog, CatalogSubjectWithTopics } from './catalogData';
+import { CreateCustomTopicModal } from './CreateCustomTopicModal';
 import {
   Search,
   BookOpen,
@@ -19,19 +20,22 @@ import {
   ArrowRight,
   Filter,
   CheckCircle2,
+  Plus,
 } from 'lucide-react';
 
 export interface SubjectCatalogPageProps {
   onSelectTopic: (topicId: string, initialTier?: 'B' | 'A' | 'S') => void;
+  onRequestCreateTopic?: () => void;
 }
 
-export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelectTopic }) => {
-  const [subjects, setSubjects] = useState<SubjectItem[]>(FALLBACK_CURRICULUM_CATALOG);
-  const [selectedSubjectId, setSelectedSubjectId] = useState<string>(FALLBACK_CURRICULUM_CATALOG[0].slug);
-  const [topics, setTopics] = useState<TopicItem[]>(FALLBACK_CURRICULUM_CATALOG[0].topics);
+export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelectTopic, onRequestCreateTopic }) => {
+  const [subjects, setSubjects] = useState<SubjectItem[]>(() => getMergedCurriculumCatalog());
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string>(() => getMergedCurriculumCatalog()[0]?.slug || 'computer-science');
+  const [topics, setTopics] = useState<TopicItem[]>(() => getMergedCurriculumCatalog()[0]?.topics || []);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const categories = [
     'All',
@@ -41,6 +45,13 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
     'Engineering',
   ];
 
+  const refreshCatalogData = () => {
+    const merged = getMergedCurriculumCatalog();
+    setSubjects(merged);
+    const curr = merged.find((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId) || merged[0];
+    if (curr) setTopics(curr.topics);
+  };
+
   // Fetch subjects from backend, with instant fallback
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -48,9 +59,11 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         const cat = selectedCategory === 'All' ? undefined : selectedCategory;
         const data = await api.subjects.list(cat, searchQuery || undefined);
         if (data && data.length > 0) {
-          setSubjects(data);
-          if (!selectedSubjectId || !data.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
-            setSelectedSubjectId(data[0].slug || data[0].id);
+          // Merge with custom client subjects
+          const merged = getMergedCurriculumCatalog();
+          setSubjects(merged);
+          if (!selectedSubjectId || !merged.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
+            setSelectedSubjectId(merged[0]?.slug || merged[0]?.id || 'computer-science');
           }
           return;
         }
@@ -59,7 +72,7 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
       }
 
       // Filter fallback data client-side
-      let filtered = FALLBACK_CURRICULUM_CATALOG;
+      let filtered = getMergedCurriculumCatalog();
       if (selectedCategory !== 'All') {
         filtered = filtered.filter((s) => s.category.toLowerCase() === selectedCategory.toLowerCase());
       }
@@ -108,7 +121,8 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
       }
 
       // Fallback topic lookup
-      const fallbackSub = FALLBACK_CURRICULUM_CATALOG.find(
+      const catalog = getMergedCurriculumCatalog();
+      const fallbackSub = catalog.find(
         (s) => s.slug === selectedSubjectId || s.id === selectedSubjectId
       );
       if (fallbackSub) {
@@ -122,27 +136,48 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
           setTopics(fallbackSub.topics);
         }
       } else {
-        setTopics(FALLBACK_CURRICULUM_CATALOG[0].topics);
+        setTopics(catalog[0]?.topics || []);
       }
     };
 
     fetchTopics();
   }, [selectedSubjectId, searchQuery]);
 
+  const catalog = getMergedCurriculumCatalog();
   const selectedSubject =
     subjects.find((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId) ||
-    FALLBACK_CURRICULUM_CATALOG[0];
+    catalog[0];
+
+  const handleOpenCreateModal = () => {
+    if (onRequestCreateTopic) onRequestCreateTopic();
+    else setIsCreateModalOpen(true);
+  };
+
+  const handleTopicCreated = (newTopicId: string, initialTier: 'B' | 'A' | 'S') => {
+    refreshCatalogData();
+    onSelectTopic(newTopicId, initialTier);
+  };
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-16 font-sans">
       {/* Catalog Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-black tracking-tight text-zinc-950 dark:text-white font-display">
-          Curriculum & Subject Catalog
-        </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl leading-relaxed">
-          Explore structured engineering and scientific disciplines calibrated for dynamic multi-tier pedagogical depth (Foundations, Core, and Advanced).
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black tracking-tight text-zinc-950 dark:text-white font-display">
+            Curriculum & Subject Catalog
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl leading-relaxed">
+            Explore structured engineering and scientific disciplines calibrated for dynamic multi-tier pedagogical depth (Foundations, Core, and Advanced).
+          </p>
+        </div>
+
+        <button
+          onClick={handleOpenCreateModal}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-950 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 text-xs font-bold shadow-xs transition-all active:scale-95 shrink-0 self-start sm:self-auto"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-amber-400 dark:text-amber-600" />
+          <span>Create Custom Topic</span>
+        </button>
       </div>
 
       {/* Filter and Search Bar - Pure Monochrome */}
@@ -331,24 +366,43 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
             {topics.length === 0 && (
               <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 space-y-3">
                 <BookOpen className="w-8 h-8 text-zinc-400 mx-auto" />
-                <h4 className="text-sm font-bold text-zinc-950 dark:text-white">No topics found in this selection</h4>
+                <h4 className="text-sm font-bold text-zinc-950 dark:text-white">
+                  {searchQuery ? `No topics found for "${searchQuery}"` : 'No topics found in this selection'}
+                </h4>
                 <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-                  Try clearing your search query or selecting another discipline to explore topics.
+                  {searchQuery
+                    ? `Want to study "${searchQuery}"? Generate a full 5-studio interactive curriculum with AI right now.`
+                    : 'Try clearing your search query or generate your own custom topic.'}
                 </p>
-                <button
-                  onClick={() => {
-                    setSelectedCategory('All');
-                    setSearchQuery('');
-                  }}
-                  className="px-4 py-2 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
-                >
-                  View All Topics
-                </button>
+                <div className="pt-2 flex items-center justify-center gap-2.5">
+                  <button
+                    onClick={handleOpenCreateModal}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate Topic with AI</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory('All');
+                      setSearchQuery('');
+                    }}
+                    className="px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
+                  >
+                    View All Topics
+                  </button>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      <CreateCustomTopicModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTopicCreated={handleTopicCreated}
+      />
     </div>
   );
 };

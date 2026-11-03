@@ -235,10 +235,15 @@ pre code {
 /* Suppress any rogue error containers that 3rd-party libraries (like Mermaid) inject anywhere */
 div[id^="dmermaid"],
 svg[id^="dmermaid"],
-.error-icon,
 [id^="dmermaid"],
+.error-icon,
+path.error-icon,
+svg.error-icon,
 div.error-icon,
-svg.error-icon {
+svg:has(.error-icon),
+div:has(> svg .error-icon),
+div:has(> .error-icon),
+[aria-roledescription="error"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;

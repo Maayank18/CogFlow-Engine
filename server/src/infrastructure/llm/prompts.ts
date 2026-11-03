@@ -201,8 +201,38 @@ Respond with a single JSON object with the following exact structure:
     },
     {
       "id": "q-6",
+      "type": "mcq",
+      "prompt": "Boundary condition test: What occurs when maximum capacity or concurrency limits are reached in ${topicTitle}?",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 0,
+      "explanation": "Detailed explanation of boundary behavior and saturation mitigation",
+      "maxScore": 10
+    },
+    {
+      "id": "q-7",
+      "type": "mcq",
+      "prompt": "Real-world trade-off: Comparing ${topicTitle} against alternative design patterns in systems engineering",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 2,
+      "explanation": "Comparative analysis of throughput, latency, and correctness invariants",
+      "maxScore": 10
+    },
+    {
+      "id": "q-8",
+      "type": "mcq",
+      "prompt": "Practical debugging: Which telemetry metric provides the earliest signal of instability in ${topicTitle}?",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 3,
+      "explanation": "Explanation of monitoring signals, health checks, and anomaly detection",
+      "maxScore": 10
+    },
+    {
+      "id": "q-9",
       "type": "concept",
-      "prompt": "In your own words, synthesize how ${topicTitle} guarantees correctness or maintains performance invariants under adversarial network or load conditions.",
+      "prompt": "In your own words, synthesize how ${topicTitle} guarantees correctness or maintains performance invariants under adversarial load or failure conditions.",
       "tier": "${tier}",
       "explanation": "A complete answer must formulate the core invariants, analyze boundary failure modes, and articulate the engineering trade-offs.",
       "maxScore": 20,
@@ -210,6 +240,19 @@ Respond with a single JSON object with the following exact structure:
         "Formulates the core mechanism or mathematical invariant",
         "Explains boundary or failure mode handling",
         "Demonstrates causal reasoning rather than memorized buzzwords"
+      ]
+    },
+    {
+      "id": "q-10",
+      "type": "concept",
+      "prompt": "Given a mission-critical production environment, what architectural guardrails would you implement alongside ${topicTitle} to ensure fault tolerance and rapid disaster recovery?",
+      "tier": "${tier}",
+      "explanation": "Synthesizes observability, idempotency, rate limiting, and automated failover strategies.",
+      "maxScore": 20,
+      "rubricCriteria": [
+        "Identifies observability and health check invariants",
+        "Articulates graceful degradation or backup paths",
+        "Analyzes recovery time objectives and data consistency guarantees"
       ]
     }
   ]

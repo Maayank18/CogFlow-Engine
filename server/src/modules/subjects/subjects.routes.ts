@@ -4,6 +4,8 @@ import { subjectsController } from './subjects.controller.js';
 const router = Router();
 
 router.get('/', subjectsController.listSubjects.bind(subjectsController));
+router.post('/', subjectsController.createSubject.bind(subjectsController));
+router.post('/topics', subjectsController.createTopic.bind(subjectsController));
 router.get('/:subjectId', subjectsController.getSubject.bind(subjectsController));
 router.get('/:subjectId/topics', subjectsController.listTopics.bind(subjectsController));
 router.get('/topics/:topicId', subjectsController.getTopic.bind(subjectsController));

@@ -1,16 +1,17 @@
 import { LessonContent, PedagogicalTier } from '@cogflow/shared';
-import { FALLBACK_CURRICULUM_CATALOG } from '../subjects/catalogData';
+import { getMergedCurriculumCatalog } from '../subjects/catalogData';
 
 export function getClientFallbackLesson(
   topicIdOrSlug: string,
   tier: PedagogicalTier = 'A'
 ): LessonContent {
-  // Find topic in catalog
+  // Find topic in merged catalog (built-in + user-created custom topics)
   let topicTitle = 'Distributed Consensus & Raft Protocol';
   let subjectTitle = 'Computer Science & Distributed Systems';
   let summary = 'How distributed nodes agree on a shared state machine log in the presence of network partitions and crashes.';
 
-  for (const sub of FALLBACK_CURRICULUM_CATALOG) {
+  const catalog = getMergedCurriculumCatalog();
+  for (const sub of catalog) {
     const found = sub.topics.find((t) => t.id === topicIdOrSlug || t.slug === topicIdOrSlug);
     if (found) {
       topicTitle = found.title;

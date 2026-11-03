@@ -80,14 +80,49 @@ function parseMermaidFallback(code: string) {
 }
 
 // Purge any rogue error elements injected by 3rd party scripts anywhere in the document
-function purgeRogueMermaidDOMElements() {
+export function purgeRogueMermaidDOMElements() {
   if (typeof document === 'undefined') return;
   try {
+    // 1. Remove rogue CDN script tag if present
+    const cdnScript = document.getElementById('mermaid-cdn-script');
+    if (cdnScript) cdnScript.remove();
+
+    // 2. Remove error icons and their enclosing SVGs
+    const errorIcons = document.querySelectorAll('.error-icon, path.error-icon');
+    errorIcons.forEach((icon) => {
+      const svg = icon.closest('svg');
+      if (svg) {
+        const parent = svg.parentElement;
+        svg.remove();
+        if (parent && parent !== document.body && parent.id !== 'root' && parent.children.length === 0) {
+          parent.remove();
+        }
+      } else {
+        icon.remove();
+      }
+    });
+
+    // 3. Purge elements matching error selectors
     const rogues = document.querySelectorAll(
-      'div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon, [id^="dmermaid"], svg.error-icon'
+      'div[id^="dmermaid"], svg[id^="dmermaid"], [id^="dmermaid"], div.error-icon, svg.error-icon'
     );
     rogues.forEach((el) => {
       el.remove();
+    });
+
+    // 4. Clean up any direct children appended by external scripts to document.body outside #root
+    Array.from(document.body.children).forEach((child) => {
+      if (child.id === 'root') return;
+      const text = child.textContent || '';
+      const id = child.id || '';
+      if (
+        id.startsWith('dmermaid') ||
+        id.startsWith('mermaid-') ||
+        text.includes('Syntax error') ||
+        text.includes('mermaid version')
+      ) {
+        child.remove();
+      }
     });
   } catch {
     // Ignore DOM removal errors
@@ -97,118 +132,40 @@ function purgeRogueMermaidDOMElements() {
 export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
-  const [renderMode, setRenderMode] = useState<'mermaid' | 'flow' | 'raw'>('flow');
-  const [mermaidSvg, setMermaidSvg] = useState<string | null>(null);
+  const [renderMode, setRenderMode] = useState<'flow' | 'raw'>('flow');
   const { resolvedTheme } = useTheme();
 
   const parsedGraph = useMemo(() => {
     return parseMermaidFallback(diagram.mermaidCode);
   }, [diagram.mermaidCode]);
 
-  useEffect(() => {
-    let isCancelled = false;
+  const stages = diagram.stages || [];
+  const currentStage = stages[activeStageIndex];
 
-    // Purge any rogue elements immediately on mount
+  // Guaranteed fallback nodes: if parser extracted nodes use them, otherwise synthesize from stages
+  const displayNodes = useMemo(() => {
+    if (parsedGraph.nodes.length > 0) return parsedGraph.nodes;
+    if (stages.length > 0) {
+      return stages.map((s, idx) => ({
+        id: `stage-${s.step || idx}`,
+        label: `${s.step || idx + 1}. ${s.label}`,
+        index: idx,
+      }));
+    }
+    return [];
+  }, [parsedGraph.nodes, stages]);
+
+  useEffect(() => {
+    // Purge any rogue elements immediately on mount and on stage/theme change
     purgeRogueMermaidDOMElements();
 
-    const tryLoadMermaid = async () => {
-      const win = typeof window !== 'undefined' ? (window as any) : null;
-      if (!win) return;
-
-      try {
-        if (!win.mermaid) {
-          await new Promise<void>((resolve, reject) => {
-            const existingScript = document.getElementById('mermaid-cdn-script');
-            if (existingScript) {
-              existingScript.addEventListener('load', () => resolve());
-              existingScript.addEventListener('error', () => reject(new Error('CDN failed')));
-              return;
-            }
-
-            const script = document.createElement('script');
-            script.id = 'mermaid-cdn-script';
-            script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js';
-            script.async = true;
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error('Mermaid CDN unreachable'));
-            document.head.appendChild(script);
-          });
-        }
-
-        if (win.mermaid && !isCancelled) {
-          win.mermaid.initialize({
-            startOnLoad: false,
-            theme: resolvedTheme === 'dark' ? 'dark' : resolvedTheme === 'comfort' ? 'neutral' : 'default',
-            securityLevel: 'loose',
-            fontFamily: 'Inter, sans-serif',
-            suppressErrorRendering: true,
-          });
-
-          purgeRogueMermaidDOMElements();
-
-          try {
-            // Validate syntax first if parse function is available
-            if (typeof win.mermaid.parse === 'function') {
-              const isValid = await win.mermaid.parse(diagram.mermaidCode).catch(() => false);
-              if (!isValid) {
-                purgeRogueMermaidDOMElements();
-                if (!isCancelled) {
-                  setMermaidSvg(null);
-                  setRenderMode('flow');
-                }
-                return;
-              }
-            }
-
-            const uniqueId = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-            const result = await win.mermaid.render(uniqueId, diagram.mermaidCode);
-            purgeRogueMermaidDOMElements();
-
-            if (!isCancelled && result && result.svg) {
-              // Critical protection: reject any SVG containing Mermaid error markers
-              const isErrorSvg =
-                result.svg.includes('Syntax error') ||
-                result.svg.includes('error-icon') ||
-                result.svg.includes('dmermaid');
-
-              if (isErrorSvg) {
-                console.warn('[VisualStudio] Mermaid rendered an error SVG. Using built-in Calm Precision flow renderer.');
-                purgeRogueMermaidDOMElements();
-                setMermaidSvg(null);
-                setRenderMode('flow');
-                return;
-              }
-
-              setMermaidSvg(result.svg);
-              setRenderMode('mermaid');
-            }
-          } catch (renderError) {
-            purgeRogueMermaidDOMElements();
-            console.warn('[VisualStudio] Mermaid render error (seamlessly using SVG flow renderer):', renderError);
-            if (!isCancelled) {
-              setMermaidSvg(null);
-              setRenderMode('flow');
-            }
-          }
-        }
-      } catch (err) {
-        purgeRogueMermaidDOMElements();
-        if (!isCancelled) {
-          setRenderMode('flow');
-        }
-      }
-    };
-
-    tryLoadMermaid();
+    const timer = setTimeout(purgeRogueMermaidDOMElements, 50);
 
     return () => {
-      isCancelled = true;
+      clearTimeout(timer);
       purgeRogueMermaidDOMElements();
     };
   }, [diagram.mermaidCode, resolvedTheme]);
-
-  const stages = diagram.stages || [];
-  const currentStage = stages[activeStageIndex];
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-16 font-sans">
@@ -248,18 +205,12 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
                 {diagram.mermaidCode}
               </pre>
             </div>
-          ) : renderMode === 'mermaid' && mermaidSvg ? (
-            <div
-              ref={containerRef}
-              dangerouslySetInnerHTML={{ __html: mermaidSvg }}
-              className="w-full flex items-center justify-center [&_svg]:max-w-full [&_svg]:h-auto"
-            />
           ) : (
             /* Calm Precision Pure SVG Flowchart Renderer */
             <div className="w-full py-4">
               <div className="flex flex-wrap items-center justify-center gap-4 max-w-2xl mx-auto">
-                {parsedGraph.nodes.length > 0 ? (
-                  parsedGraph.nodes.map((node, i) => (
+                {displayNodes.length > 0 ? (
+                  displayNodes.map((node, i) => (
                     <React.Fragment key={node.id}>
                       <div className="flex flex-col items-center group">
                         <div className="px-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs transition hover:border-zinc-950 dark:hover:border-white">
@@ -272,7 +223,7 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
                         </div>
                       </div>
 
-                      {i < parsedGraph.nodes.length - 1 && (
+                      {i < displayNodes.length - 1 && (
                         <div className="flex items-center text-zinc-400 font-mono text-sm px-1">
                           <ArrowRight className="w-4 h-4 text-zinc-500" />
                         </div>

@@ -127,8 +127,26 @@ class ApiClient {
       return this.request<SubjectItem[]>(`/subjects?${params.toString()}`);
     },
     get: (subjectId: string) => this.request<SubjectItem>(`/subjects/${subjectId}`),
+    create: (data: { title: string; category?: string; description?: string; icon?: string }) =>
+      this.request<SubjectItem>('/subjects', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
     listTopics: (subjectId: string) => this.request<TopicItem[]>(`/subjects/${subjectId}/topics`),
     getTopic: (topicId: string) => this.request<TopicItem>(`/subjects/topics/${topicId}`),
+    createTopic: (data: {
+      title: string;
+      subjectIdOrSlug?: string;
+      category?: string;
+      summary?: string;
+      difficultyBaseline?: 'B' | 'A' | 'S';
+      estimatedMinutes?: number;
+      learningObjectives?: string[];
+    }) =>
+      this.request<TopicItem>('/subjects/topics', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
   };
 
   // --- Learning Cockpit Endpoints ---

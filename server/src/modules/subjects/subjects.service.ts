@@ -453,6 +453,160 @@ export class SubjectsService {
       inMemoryStore.topics.items[0]
     );
   }
+
+  async createSubject(data: {
+    title: string;
+    category?: 'Computer Science' | 'Mathematics' | 'Physics' | 'Chemistry' | 'Biology' | 'Engineering';
+    description?: string;
+    icon?: string;
+  }) {
+    await this.ensureCurriculumSeeded();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
+
+    const title = data.title.trim();
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    const category = data.category || 'Computer Science';
+    const description = data.description || `Structured discipline for ${title}.`;
+    const icon = data.icon || 'BookOpen';
+
+    // Check if already exists
+    let existing = await this.getSubject(slug);
+    if (existing && (existing.title.toLowerCase() === title.toLowerCase() || existing.slug === slug)) {
+      return existing;
+    }
+
+    if (isInMemoryMode || !isConnected) {
+      const subject = inMemoryStore.subjects.create({
+        slug,
+        title,
+        category,
+        description,
+        icon,
+        topicCount: 0,
+        order: inMemoryStore.subjects.items.length + 1,
+      });
+      return subject;
+    }
+
+    try {
+      const subject = await SubjectModel.create({
+        slug,
+        title,
+        category,
+        description,
+        icon,
+        topicCount: 0,
+        order: (await SubjectModel.countDocuments()) + 1,
+      });
+      return subject;
+    } catch {
+      return inMemoryStore.subjects.create({
+        slug,
+        title,
+        category,
+        description,
+        icon,
+        topicCount: 0,
+        order: inMemoryStore.subjects.items.length + 1,
+      });
+    }
+  }
+
+  async createTopic(data: {
+    title: string;
+    subjectIdOrSlug?: string;
+    category?: 'Computer Science' | 'Mathematics' | 'Physics' | 'Chemistry' | 'Biology' | 'Engineering';
+    summary?: string;
+    difficultyBaseline?: 'B' | 'A' | 'S';
+    estimatedMinutes?: number;
+    learningObjectives?: string[];
+  }) {
+    await this.ensureCurriculumSeeded();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
+
+    const title = data.title.trim();
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+
+    // Resolve or create subject
+    let subject: any = null;
+    if (data.subjectIdOrSlug) {
+      subject = await this.getSubject(data.subjectIdOrSlug);
+    }
+    if (!subject) {
+      subject = await this.createSubject({
+        title: data.subjectIdOrSlug || 'Custom Studies',
+        category: data.category || 'Computer Science',
+      });
+    }
+
+    const subjectId = subject ? (subject.id || subject._id || subject.slug).toString() : 'custom';
+    const summary = data.summary || `AI-generated structured curriculum for ${title}.`;
+    const difficultyBaseline = data.difficultyBaseline || 'A';
+    const estimatedMinutes = data.estimatedMinutes || 30;
+    const learningObjectives =
+      data.learningObjectives && data.learningObjectives.length > 0
+        ? data.learningObjectives
+        : [
+            `Master the fundamental intuition and core principles of ${title}`,
+            `Analyze real-world architecture patterns, tradeoffs, and edge cases`,
+            `Verify knowledge retention through multi-tier conceptual practice`,
+          ];
+
+    // Check if topic exists
+    const existingTopic = await this.getTopic(slug);
+    if (existingTopic && (existingTopic.slug === slug || existingTopic.title.toLowerCase() === title.toLowerCase())) {
+      return existingTopic;
+    }
+
+    if (isInMemoryMode || !isConnected) {
+      const newTopic = inMemoryStore.topics.create({
+        subjectId,
+        slug,
+        title,
+        summary,
+        prerequisites: ['Foundational concepts'],
+        learningObjectives,
+        estimatedMinutes,
+        difficultyBaseline,
+        order: inMemoryStore.topics.items.length + 1,
+      });
+      return newTopic;
+    }
+
+    try {
+      const mongoSubId = subject._id || subject.id;
+      const newTopic = await TopicModel.create({
+        subjectId: mongoSubId,
+        slug,
+        title,
+        summary,
+        prerequisites: ['Foundational concepts'],
+        learningObjectives,
+        estimatedMinutes,
+        difficultyBaseline,
+        order: (await TopicModel.countDocuments()) + 1,
+      });
+      return newTopic;
+    } catch {
+      return inMemoryStore.topics.create({
+        subjectId,
+        slug,
+        title,
+        summary,
+        prerequisites: ['Foundational concepts'],
+        learningObjectives,
+        estimatedMinutes,
+        difficultyBaseline,
+        order: inMemoryStore.topics.items.length + 1,
+      });
+    }
+  }
 }
 
 export const subjectsService = new SubjectsService();

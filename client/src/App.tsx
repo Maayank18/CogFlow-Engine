@@ -6,6 +6,7 @@ import { LandingPage } from './features/landing/LandingPage';
 import { OnboardingModal } from './features/onboarding/OnboardingModal';
 import { DashboardPage } from './features/dashboard/DashboardPage';
 import { SubjectCatalogPage } from './features/subjects/SubjectCatalogPage';
+import { CreateCustomTopicModal } from './features/subjects/CreateCustomTopicModal';
 import { DocumentUploadPage } from './features/documents/DocumentUploadPage';
 import { AnalyticsPage } from './features/analytics/AnalyticsPage';
 import { SettingsPage } from './features/settings/SettingsPage';
@@ -41,16 +42,55 @@ const AppContent: React.FC = () => {
   const [showLandingPreview, setShowLandingPreview] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Global suppression & purge of rogue error elements injected anywhere in the DOM
   useEffect(() => {
     const purgeRogueElements = () => {
       if (typeof document === 'undefined') return;
-      document
-        .querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon, [id^="dmermaid"], div.error-icon, svg.error-icon')
-        .forEach((el) => {
-          el.remove();
+      try {
+        // 1. Remove CDN script if injected
+        const cdnScript = document.getElementById('mermaid-cdn-script');
+        if (cdnScript) cdnScript.remove();
+
+        // 2. Remove error icons and enclosing SVGs
+        document.querySelectorAll('.error-icon, path.error-icon').forEach((icon) => {
+          const svg = icon.closest('svg');
+          if (svg) {
+            const parent = svg.parentElement;
+            svg.remove();
+            if (parent && parent !== document.body && parent.id !== 'root' && parent.children.length === 0) {
+              parent.remove();
+            }
+          } else {
+            icon.remove();
+          }
         });
+
+        // 3. Purge elements matching error selectors
+        document
+          .querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], [id^="dmermaid"], div.error-icon, svg.error-icon')
+          .forEach((el) => {
+            el.remove();
+          });
+
+        // 4. Clean up any direct children appended by external scripts to document.body outside #root
+        Array.from(document.body.children).forEach((child) => {
+          if (child.id === 'root') return;
+          const text = child.textContent || '';
+          const id = child.id || '';
+          if (
+            id.startsWith('dmermaid') ||
+            id.startsWith('mermaid-') ||
+            text.includes('Syntax error') ||
+            text.includes('mermaid version')
+          ) {
+            child.remove();
+          }
+        });
+      } catch {
+        // Ignore DOM errors
+      }
     };
     purgeRogueElements();
     const observer = new MutationObserver(() => purgeRogueElements());
@@ -286,6 +326,16 @@ const AppContent: React.FC = () => {
               )}
             </button>
 
+            {/* Study Any Topic with AI Button */}
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-900 dark:text-zinc-100 text-xs font-bold transition-all shadow-xs"
+              title="Create and study any custom topic or subject with AI"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+              <span>Study Any Topic</span>
+            </button>
+
             {/* Launch Studio Button - Pure High Contrast */}
             <button
               onClick={() => handleLaunchTopic('distributed-consensus-raft', 'A')}
@@ -306,7 +356,10 @@ const AppContent: React.FC = () => {
             />
           )}
           {currentView === 'subjects' && (
-            <SubjectCatalogPage onSelectTopic={handleLaunchTopic} />
+            <SubjectCatalogPage
+              onSelectTopic={handleLaunchTopic}
+              onRequestCreateTopic={() => setIsCreateModalOpen(true)}
+            />
           )}
           {currentView === 'documents' && (
             <DocumentUploadPage onLaunchTopic={handleLaunchTopic} />
@@ -315,6 +368,12 @@ const AppContent: React.FC = () => {
           {currentView === 'settings' && <SettingsPage />}
         </main>
       </div>
+
+      <CreateCustomTopicModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTopicCreated={(tid, tr) => handleLaunchTopic(tid, tr)}
+      />
     </div>
   );
 };

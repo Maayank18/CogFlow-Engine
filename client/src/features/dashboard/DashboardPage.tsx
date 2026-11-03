@@ -4,7 +4,8 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { useAuth } from '../auth/AuthContext';
 import { api } from '../../services/api';
-import { FALLBACK_CURRICULUM_CATALOG } from '../subjects/catalogData';
+import { getMergedCurriculumCatalog } from '../subjects/catalogData';
+import { CreateCustomTopicModal } from '../subjects/CreateCustomTopicModal';
 import {
   LearningAnalyticsOverview,
   LearningSessionSummary,
@@ -35,10 +36,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onLaunchTopic, onN
   const { user } = useAuth();
   const [analytics, setAnalytics] = useState<LearningAnalyticsOverview | null>(null);
   const [recentSessions, setRecentSessions] = useState<LearningSessionSummary[]>([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   // Initialize with immediate fallback topics so "Recommended Topics" is NEVER empty
-  const [recommendedTopics, setRecommendedTopics] = useState<TopicItem[]>(
-    FALLBACK_CURRICULUM_CATALOG[0].topics.slice(0, 3)
-  );
+  const [recommendedTopics, setRecommendedTopics] = useState<TopicItem[]>(() => {
+    const catalog = getMergedCurriculumCatalog();
+    return catalog[0]?.topics?.slice(0, 3) || [];
+  });
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -52,12 +55,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onLaunchTopic, onN
         if (overviewData) setAnalytics(overviewData);
         if (sessionsData && sessionsData.length > 0) setRecentSessions(sessionsData);
 
+        const catalog = getMergedCurriculumCatalog();
         if (csTopics && csTopics.length > 0) {
           setRecommendedTopics(csTopics.slice(0, 3));
         } else {
           const allFallback = [
-            ...FALLBACK_CURRICULUM_CATALOG[0].topics,
-            ...FALLBACK_CURRICULUM_CATALOG[1].topics,
+            ...(catalog[0]?.topics || []),
+            ...(catalog[1]?.topics || []),
           ];
           setRecommendedTopics(allFallback.slice(0, 3));
         }
@@ -107,6 +111,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onLaunchTopic, onN
                 <span>Launch Distributed Consensus (Raft)</span>
               </button>
             )}
+
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-zinc-950/5 hover:bg-zinc-950/10 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-950 dark:text-white text-xs font-bold border border-zinc-300 dark:border-zinc-700 transition-all shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+              <span>Study Any Topic with AI</span>
+            </button>
 
             <button
               onClick={() => onNavigate('subjects')}
@@ -334,6 +346,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onLaunchTopic, onN
           </div>
         </div>
       </div>
+
+      <CreateCustomTopicModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTopicCreated={(newTopicId, initialTier) => onLaunchTopic(newTopicId, initialTier)}
+      />
     </div>
   );
 };

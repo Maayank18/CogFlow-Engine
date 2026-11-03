@@ -16,10 +16,11 @@
 4. [Cloud Acceleration: Groq LPU Fallback](#4-cloud-acceleration-groq-lpu-fallback)
 5. [Deterministic Offline Engine (Zero Blank States)](#5-deterministic-offline-engine-zero-blank-states)
 6. [The 5 Specialized Studios](#6-the-5-specialized-studios)
-7. [The 3 Visual Theme Formats](#7-the-3-visual-theme-formats)
-8. [The 30-Second Sustained Adaptation Invariant](#8-the-30-second-sustained-adaptation-invariant)
-9. [Available CLI Scripts](#9-available-cli-scripts)
-10. [Troubleshooting & Common Questions](#10-troubleshooting--common-questions)
+7. [Creating Custom Subjects & Topics On-Demand with AI](#7-creating-custom-subjects--topics-on-demand-with-ai)
+8. [The 3 Visual Theme Formats](#8-the-3-visual-theme-formats)
+9. [The 30-Second Sustained Adaptation Invariant](#9-the-30-second-sustained-adaptation-invariant)
+10. [Available CLI Scripts](#10-available-cli-scripts)
+11. [Troubleshooting & Common Questions](#11-troubleshooting--common-questions)
 
 ---
 
@@ -192,7 +193,37 @@ When you enter any topic in the **Learning Cockpit**, CogFlow provides 5 interac
 
 ---
 
-## 7. The 3 Visual Theme Formats
+## 7. Creating Custom Subjects & Topics On-Demand with AI
+
+CogFlow empowers learners to study **any topic or discipline on earth** on demand. You are not limited to pre-packaged courses.
+
+### How to Create a Custom Topic
+1. Click the **"Study Any Topic with AI"** or **"+ Create Custom Topic"** button available in:
+   - The top navigation bar
+   - The Dashboard Quick Action Hero
+   - The Curriculum Catalog
+2. Select an existing discipline (e.g. *Computer Science*, *Mathematics*, *Physics*) or choose **"+ New subject"** to create a custom discipline.
+3. Enter your topic title (e.g. *"Rust Memory Safety & Lifetimes"*, *"Quantum Computing & Qubits"*, *"Calculus: Backpropagation Proof"*).
+4. Choose your baseline tier:
+   - **Tier B (Foundations)**: Analogy-first intuition, mental models, zero jargon.
+   - **Tier A (Core Standard)**: Production architecture, diagrams, idiomatic code.
+   - **Tier S (Advanced Rigor)**: Mathematical formalisms, failure modes, invariant proofs.
+5. Optionally specify customized study focus notes or constraints.
+6. Click **"Generate & Study Now"**.
+
+### What Happens Behind the Scenes
+- CogFlow dynamically registers the topic in your local persistent curriculum catalog (`localStorage`) and syncs it with the backend database.
+- The AI Orchestrator requests Ollama (or Groq) to generate:
+  - 3–4 pedagogical Markdown sections with **Key Takeaways** and **Interactive Comprehension Checks**
+  - An interactive multi-stage architectural diagram
+  - Production-grade code examples with line-by-line annotations
+  - Revision flashcards and pitfall warnings
+  - **8–10 comprehensive MCQs and conceptual rubric assessments**
+- The system launches directly into the Learning Cockpit with zero delay!
+
+---
+
+## 8. The 3 Visual Theme Formats
 
 CogFlow includes three distinct, professionally engineered visual themes:
 
@@ -213,7 +244,7 @@ CogFlow includes three distinct, professionally engineered visual themes:
 
 ---
 
-## 8. The 30-Second Sustained Adaptation Invariant
+## 9. The 30-Second Sustained Adaptation Invariant
 
 CogFlow protects learners from cognitive thrashing by enforcing a strict **30-second sustained adaptation invariant**:
 
@@ -228,7 +259,7 @@ Sustained Effortless Flow (> 30s)   ───> Propose Challenge:   Tier A ─�
 
 ---
 
-## 9. Available CLI Scripts
+## 10. Available CLI Scripts
 
 Execute these commands from the root directory:
 
@@ -254,7 +285,7 @@ npm run typecheck
 
 ---
 
-## 10. Troubleshooting & Common Questions
+## 11. Troubleshooting & Common Questions
 
 ### Q: Why do I see "Port 27017 is not listening. Activating CogFlow In-Memory Resilience Store"?
 **A**: This is expected behavior if you don't have MongoDB running locally. CogFlow initializes its built-in in-memory document database so you can test, create users, ingest syllabi, and practice assessments with zero database installation.
@@ -275,3 +306,4 @@ Restart `npm run dev` for the changes to take effect.
 ---
 
 *Engineered with precision for calm, focused, adaptive mastery.*
+

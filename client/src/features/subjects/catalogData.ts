@@ -259,3 +259,161 @@ export const FALLBACK_CURRICULUM_CATALOG: CatalogSubjectWithTopics[] = [
     ],
   },
 ];
+
+const CUSTOM_TOPICS_STORAGE_KEY = 'cogflow_custom_subjects_v1';
+
+export function getStoredCustomSubjects(): CatalogSubjectWithTopics[] {
+  if (typeof window === 'undefined' || !window.localStorage) return [];
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_TOPICS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    console.warn('[CatalogData] Error reading custom topics from localStorage:', err);
+    return [];
+  }
+}
+
+export function saveStoredCustomSubjects(subjects: CatalogSubjectWithTopics[]): void {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    window.localStorage.setItem(CUSTOM_TOPICS_STORAGE_KEY, JSON.stringify(subjects));
+  } catch (err) {
+    console.warn('[CatalogData] Error saving custom topics to localStorage:', err);
+  }
+}
+
+export function getMergedCurriculumCatalog(): CatalogSubjectWithTopics[] {
+  const custom = getStoredCustomSubjects();
+  if (custom.length === 0) return FALLBACK_CURRICULUM_CATALOG;
+
+  // Merge custom subjects with default catalog
+  const merged = [...FALLBACK_CURRICULUM_CATALOG];
+  for (const customSub of custom) {
+    const existingIdx = merged.findIndex(
+      (s) => s.id === customSub.id || s.slug === customSub.slug || s.title.toLowerCase() === customSub.title.toLowerCase()
+    );
+    if (existingIdx !== -1) {
+      // Merge topics
+      const existing = merged[existingIdx];
+      const mergedTopics = [...existing.topics];
+      for (const t of customSub.topics) {
+        if (!mergedTopics.some((mt) => mt.id === t.id || mt.slug === t.slug || mt.title.toLowerCase() === t.title.toLowerCase())) {
+          mergedTopics.unshift(t);
+        }
+      }
+      merged[existingIdx] = {
+        ...existing,
+        topicCount: mergedTopics.length,
+        topics: mergedTopics,
+      };
+    } else {
+      merged.unshift(customSub);
+    }
+  }
+  return merged;
+}
+
+export function addCustomTopicOrSubject(params: {
+  subjectTitle: string;
+  category?: string;
+  topicTitle: string;
+  summary?: string;
+  difficultyBaseline?: 'B' | 'A' | 'S';
+  customPrompt?: string;
+}): { subject: CatalogSubjectWithTopics; topic: TopicItem } {
+  const {
+    subjectTitle = 'Custom Explorations',
+    category = 'Computer Science',
+    topicTitle,
+    summary = `Comprehensive study of ${topicTitle} across intuitive foundations, architectural diagrams, code, and practice.`,
+    difficultyBaseline = 'A',
+  } = params;
+
+  const validCategory = (
+    ['Computer Science', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'Engineering'].includes(category)
+      ? category
+      : 'Computer Science'
+  ) as 'Computer Science' | 'Mathematics' | 'Physics' | 'Chemistry' | 'Biology' | 'Engineering';
+
+  const topicSlug = topicTitle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || `custom-topic-${Date.now()}`;
+
+  const subjectSlug = subjectTitle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || `custom-subject-${Date.now()}`;
+
+  const topicId = `top-custom-${Date.now()}`;
+  const subjectId = `sub-custom-${Date.now()}`;
+
+  const newTopic: TopicItem = {
+    id: topicId,
+    subjectId,
+    slug: topicSlug,
+    title: topicTitle,
+    summary,
+    prerequisites: ['Foundational concepts', 'Analytical reasoning'],
+    learningObjectives: [
+      `Master the core principles and underlying intuition of ${topicTitle}`,
+      `Analyze architectural mechanics, tradeoffs, and failure modes`,
+      `Evaluate operational proficiency with interactive multi-tier practice`,
+    ],
+    estimatedMinutes: 30,
+    difficultyBaseline,
+    order: 1,
+  };
+
+  const storedSubjects = getStoredCustomSubjects();
+  let targetSubject: CatalogSubjectWithTopics;
+  const existingSubject = storedSubjects.find(
+    (s) => s.slug === subjectSlug || s.title.toLowerCase() === subjectTitle.toLowerCase()
+  );
+
+  if (existingSubject) {
+    // Add topic to existing subject
+    targetSubject = {
+      ...existingSubject,
+      topics: [newTopic, ...existingSubject.topics.filter((t) => t.slug !== topicSlug)],
+      topicCount: existingSubject.topics.length + 1,
+    };
+    const idx = storedSubjects.findIndex((s) => s.id === existingSubject.id || s.slug === existingSubject.slug);
+    if (idx !== -1) storedSubjects[idx] = targetSubject;
+    else storedSubjects.unshift(targetSubject);
+  } else {
+    // Check if it's one of the built-in subjects
+    const builtinSubject = FALLBACK_CURRICULUM_CATALOG.find(
+      (s) => s.slug === subjectSlug || s.title.toLowerCase() === subjectTitle.toLowerCase()
+    );
+
+    if (builtinSubject) {
+      targetSubject = {
+        ...builtinSubject,
+        topics: [newTopic, ...builtinSubject.topics],
+        topicCount: builtinSubject.topics.length + 1,
+      };
+      storedSubjects.unshift(targetSubject);
+    } else {
+      targetSubject = {
+        id: subjectId,
+        slug: subjectSlug,
+        title: subjectTitle,
+        category: validCategory,
+        description: `Custom curriculum for ${subjectTitle} powered by on-device and cloud LLM synthesis.`,
+        icon: 'Sparkles',
+        topicCount: 1,
+        order: 0,
+        topics: [newTopic],
+      };
+      storedSubjects.unshift(targetSubject);
+    }
+  }
+
+  saveStoredCustomSubjects(storedSubjects);
+
+  return { subject: targetSubject, topic: newTopic };
+}
+
