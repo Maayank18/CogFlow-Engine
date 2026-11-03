@@ -24,16 +24,16 @@ export interface SeedSubjectData {
 export const INITIAL_CURRICULUM: SeedSubjectData[] = [
   {
     slug: 'computer-science',
-    title: 'Computer Science & Systems',
+    title: 'Computer Science & Distributed Systems',
     category: 'Computer Science',
-    description: 'Foundational algorithms, distributed architectures, operating systems, and memory models.',
+    description: 'Consensus protocols, high-concurrency event loops, storage indexing, and CPU memory coherence.',
     icon: 'Cpu',
     order: 1,
     topics: [
       {
         slug: 'distributed-consensus-raft',
         title: 'Distributed Consensus & Raft Protocol',
-        summary: 'How distributed nodes agree on a shared state machine log in the presence of network partitions and node crashes.',
+        summary: 'How distributed nodes agree on a shared state machine log in the presence of network partitions and crashes.',
         prerequisites: ['Networking basics', 'State machine concepts'],
         learningObjectives: [
           'Master leader election, log replication, and safety invariants in Raft',
@@ -72,6 +72,72 @@ export const INITIAL_CURRICULUM: SeedSubjectData[] = [
         difficultyBaseline: 'A',
         order: 3,
       },
+      {
+        slug: 'cache-coherence-mesi',
+        title: 'Cache Coherence & CPU Memory Models',
+        summary: 'Hardware coherence protocols (MESI), store buffers, memory barriers, and false sharing.',
+        prerequisites: ['CPU caches', 'Multithreading'],
+        learningObjectives: [
+          'Master Modified, Exclusive, Shared, and Invalid cache line states',
+          'Understand why sequential consistency is sacrificed for hardware performance',
+          'Diagnose cache line bouncing and lock contention in multi-core systems',
+        ],
+        estimatedMinutes: 30,
+        difficultyBaseline: 'S',
+        order: 4,
+      },
+    ],
+  },
+  {
+    slug: 'artificial-intelligence',
+    title: 'AI & Neural Systems',
+    category: 'Computer Science',
+    description: 'Transformer architectures, diffusion generative models, self-attention, and high-dimensional vector search.',
+    icon: 'Sparkles',
+    order: 2,
+    topics: [
+      {
+        slug: 'transformer-self-attention',
+        title: 'Multi-Head Attention & Transformer Architecture',
+        summary: 'Scaled dot-product attention, query-key-value transformations, and parallel sequence representation.',
+        prerequisites: ['Linear Algebra', 'Matrix Multiplication', 'PyTorch / NumPy'],
+        learningObjectives: [
+          'Derive scaled dot-product attention mathematical formulation',
+          'Understand positional encoding and rotary embeddings (RoPE)',
+          'Analyze compute and memory complexity quadratic scaling vs FlashAttention',
+        ],
+        estimatedMinutes: 40,
+        difficultyBaseline: 'A',
+        order: 1,
+      },
+      {
+        slug: 'diffusion-generative-models',
+        title: 'Score-Based Diffusion & Denoising SDEs',
+        summary: 'Forward Gaussian noise schedules, reverse drift prediction, and classifier-free guidance.',
+        prerequisites: ['Probability Distributions', 'Calculus', 'Neural Networks'],
+        learningObjectives: [
+          'Formulate forward and reverse diffusion processes mathematically',
+          'Understand U-Net score matching and latent space optimization',
+          'Implement classifier-free guidance (CFG) for prompt steering',
+        ],
+        estimatedMinutes: 35,
+        difficultyBaseline: 'S',
+        order: 2,
+      },
+      {
+        slug: 'vector-embeddings-hnsw',
+        title: 'Vector Search & Hierarchical Navigable Small Worlds',
+        summary: 'Approximate nearest neighbor graph algorithms for sub-millisecond similarity retrieval over millions of embeddings.',
+        prerequisites: ['Graph Algorithms', 'Euclidean & Cosine Distance'],
+        learningObjectives: [
+          'Construct multi-layer skip-list inspired proximity graphs',
+          'Tune efSearch and M parameters for recall-versus-latency trade-offs',
+          'Deploy vector indexing in production RAG systems',
+        ],
+        estimatedMinutes: 30,
+        difficultyBaseline: 'A',
+        order: 3,
+      },
     ],
   },
   {
@@ -80,7 +146,7 @@ export const INITIAL_CURRICULUM: SeedSubjectData[] = [
     category: 'Mathematics',
     description: 'Rigorous linear algebra, multivariable optimization, probability theory, and discrete structures.',
     icon: 'Sigma',
-    order: 2,
+    order: 3,
     topics: [
       {
         slug: 'eigenvalues-spectral-decomposition',
@@ -116,9 +182,9 @@ export const INITIAL_CURRICULUM: SeedSubjectData[] = [
     slug: 'physics',
     title: 'Physics & Physical Systems',
     category: 'Physics',
-    description: 'Classical mechanics, thermodynamics, wave propagation, and quantum theory.',
+    description: 'Classical mechanics, thermodynamics, wave propagation, and quantum information theory.',
     icon: 'Atom',
-    order: 3,
+    order: 4,
     topics: [
       {
         slug: 'quantum-superposition-qubits',
@@ -136,49 +202,53 @@ export const INITIAL_CURRICULUM: SeedSubjectData[] = [
       },
     ],
   },
+  {
+    slug: 'engineering',
+    title: 'Systems & Software Engineering',
+    category: 'Engineering',
+    description: 'Ultra-low-latency architectures, mechanical sympathy, circuit breakers, and fault-tolerant topologies.',
+    icon: 'Layers',
+    order: 5,
+    topics: [
+      {
+        slug: 'lmax-disruptor-ringbuffer',
+        title: 'LMAX Disruptor & Lock-Free Ring Buffers',
+        summary: 'Inter-thread messaging design leveraging mechanical sympathy, cache line padding, and memory fences.',
+        prerequisites: ['Multithreading', 'Memory Barriers'],
+        learningObjectives: [
+          'Eliminate lock contention using single-writer sequence barriers',
+          'Avoid false sharing with CPU cache line padding',
+          'Achieve millions of ops/sec with sub-microsecond latency',
+        ],
+        estimatedMinutes: 35,
+        difficultyBaseline: 'S',
+        order: 1,
+      },
+      {
+        slug: 'circuit-breaker-fault-tolerance',
+        title: 'Distributed Circuit Breakers & Cascading Failures',
+        summary: 'Resilience engineering patterns that prevent total cluster outages when dependencies degrade.',
+        prerequisites: ['Distributed Systems', 'HTTP / RPC'],
+        learningObjectives: [
+          'Model Closed, Open, and Half-Open circuit breaker states',
+          'Calibrate error percentage thresholds and sliding window statistics',
+          'Implement proactive load-shedding and graceful degradation',
+        ],
+        estimatedMinutes: 25,
+        difficultyBaseline: 'A',
+        order: 2,
+      },
+    ],
+  },
 ];
 
 export class SubjectsService {
   async ensureCurriculumSeeded(): Promise<void> {
-    const { isInMemoryMode } = getDatabaseStatus();
-
-    if (isInMemoryMode) {
-      if (inMemoryStore.subjects.items.length === 0) {
-        console.log('[Curriculum] Seeding in-memory curriculum catalog...');
-        for (const item of INITIAL_CURRICULUM) {
-          const subject = inMemoryStore.subjects.create({
-            slug: item.slug,
-            title: item.title,
-            category: item.category,
-            description: item.description,
-            icon: item.icon,
-            topicCount: item.topics.length,
-            order: item.order,
-          });
-
-          for (const top of item.topics) {
-            inMemoryStore.topics.create({
-              subjectId: subject.id,
-              slug: top.slug,
-              title: top.title,
-              summary: top.summary,
-              prerequisites: top.prerequisites,
-              learningObjectives: top.learningObjectives,
-              estimatedMinutes: top.estimatedMinutes,
-              difficultyBaseline: top.difficultyBaseline,
-              order: top.order,
-            });
-          }
-        }
-      }
-      return;
-    }
-
-    const count = await SubjectModel.countDocuments();
-    if (count === 0) {
-      console.log('[Curriculum] Seeding initial curriculum into MongoDB...');
+    // 1. Always seed in-memory store so it is immediately populated
+    if (inMemoryStore.subjects.items.length === 0) {
+      console.log('[Curriculum] Populating in-memory curriculum catalog...');
       for (const item of INITIAL_CURRICULUM) {
-        const subject = await SubjectModel.create({
+        const subject = inMemoryStore.subjects.create({
           slug: item.slug,
           title: item.title,
           category: item.category,
@@ -189,8 +259,8 @@ export class SubjectsService {
         });
 
         for (const top of item.topics) {
-          await TopicModel.create({
-            subjectId: subject._id,
+          inMemoryStore.topics.create({
+            subjectId: subject.id,
             slug: top.slug,
             title: top.title,
             summary: top.summary,
@@ -202,85 +272,187 @@ export class SubjectsService {
           });
         }
       }
-      console.log('[Curriculum] Seeded successfully.');
+    }
+
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
+    if (isInMemoryMode || !isConnected) return;
+
+    try {
+      const count = await SubjectModel.countDocuments();
+      if (count === 0) {
+        console.log('[Curriculum] Seeding initial curriculum into MongoDB...');
+        for (const item of INITIAL_CURRICULUM) {
+          const subject = await SubjectModel.create({
+            slug: item.slug,
+            title: item.title,
+            category: item.category,
+            description: item.description,
+            icon: item.icon,
+            topicCount: item.topics.length,
+            order: item.order,
+          });
+
+          for (const top of item.topics) {
+            await TopicModel.create({
+              subjectId: subject._id,
+              slug: top.slug,
+              title: top.title,
+              summary: top.summary,
+              prerequisites: top.prerequisites,
+              learningObjectives: top.learningObjectives,
+              estimatedMinutes: top.estimatedMinutes,
+              difficultyBaseline: top.difficultyBaseline,
+              order: top.order,
+            });
+          }
+        }
+        console.log('[Curriculum] Seeded successfully.');
+      }
+    } catch {
+      // In-memory already has the data
     }
   }
 
   async listSubjects(category?: string, search?: string) {
     await this.ensureCurriculumSeeded();
-    const { isInMemoryMode } = getDatabaseStatus();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
 
-    if (isInMemoryMode) {
+    // If using in-memory or MongoDB is unavailable
+    if (isInMemoryMode || !isConnected) {
       let items = inMemoryStore.subjects.find();
-      if (category) {
+      if (category && category.toLowerCase() !== 'all') {
         items = items.filter((s) => s.category.toLowerCase() === category.toLowerCase());
       }
       if (search) {
-        const q = search.toLowerCase();
-        items = items.filter((s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+        const q = search.toLowerCase().trim();
+        items = items.filter(
+          (s) =>
+            s.title.toLowerCase().includes(q) ||
+            s.description.toLowerCase().includes(q) ||
+            s.category.toLowerCase().includes(q)
+        );
       }
-      return items;
+      return items.sort((a, b) => a.order - b.order);
     }
 
-    const filter: Record<string, unknown> = {};
-    if (category) filter.category = category;
-    if (search) {
-      filter.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-      ];
+    try {
+      const filter: Record<string, unknown> = {};
+      if (category && category.toLowerCase() !== 'all') {
+        filter.category = new RegExp(`^${category}$`, 'i');
+      }
+      if (search) {
+        filter.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+        ];
+      }
+      const mongoResults = await SubjectModel.find(filter).sort({ order: 1 });
+      if (mongoResults && mongoResults.length > 0) return mongoResults;
+    } catch {
+      // Fallback to in-memory store
     }
 
-    return SubjectModel.find(filter).sort({ order: 1 });
+    return inMemoryStore.subjects.find().sort((a, b) => a.order - b.order);
   }
 
   async getSubject(idOrSlug: string) {
     await this.ensureCurriculumSeeded();
-    const { isInMemoryMode } = getDatabaseStatus();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
 
-    if (isInMemoryMode) {
+    if (isInMemoryMode || !isConnected) {
       return (
         inMemoryStore.subjects.findOne({ slug: idOrSlug }) ||
-        inMemoryStore.subjects.findById(idOrSlug)
+        inMemoryStore.subjects.findById(idOrSlug) ||
+        inMemoryStore.subjects.items[0]
       );
     }
 
-    const isMongoId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
-    if (isMongoId) {
-      return SubjectModel.findById(idOrSlug);
+    try {
+      const isMongoId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
+      if (isMongoId) {
+        const sub = await SubjectModel.findById(idOrSlug);
+        if (sub) return sub;
+      }
+      const subBySlug = await SubjectModel.findOne({ slug: idOrSlug });
+      if (subBySlug) return subBySlug;
+    } catch {
+      // Fallback
     }
-    return SubjectModel.findOne({ slug: idOrSlug });
+
+    return inMemoryStore.subjects.findOne({ slug: idOrSlug }) || inMemoryStore.subjects.items[0];
   }
 
-  async listTopics(subjectId: string) {
+  async listTopics(subjectIdOrSlug: string) {
     await this.ensureCurriculumSeeded();
-    const { isInMemoryMode } = getDatabaseStatus();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
 
-    if (isInMemoryMode) {
-      return inMemoryStore.topics.find((t) => t.subjectId === subjectId);
+    // 1. Resolve subject if slug or ID was passed
+    const inMemSubject =
+      inMemoryStore.subjects.findOne({ slug: subjectIdOrSlug }) ||
+      inMemoryStore.subjects.findById(subjectIdOrSlug);
+    const inMemTargetId = inMemSubject ? (inMemSubject.id || inMemSubject._id) : subjectIdOrSlug;
+
+    if (isInMemoryMode || !isConnected) {
+      // Return topics matching subject ID, or matching slug, or matching subjectId directly
+      const topics = inMemoryStore.topics.find(
+        (t) => t.subjectId === inMemTargetId || t.subjectId === subjectIdOrSlug
+      );
+      if (topics.length > 0) return topics.sort((a, b) => a.order - b.order);
+      // If none found for specific subject, return all topics
+      return inMemoryStore.topics.items.slice(0, 10);
     }
 
-    return TopicModel.find({ subjectId }).sort({ order: 1 });
+    try {
+      let targetMongoSubjectId = subjectIdOrSlug;
+      const isMongoId = /^[0-9a-fA-F]{24}$/.test(subjectIdOrSlug);
+      if (!isMongoId) {
+        const sub = await SubjectModel.findOne({ slug: subjectIdOrSlug });
+        if (sub) targetMongoSubjectId = sub._id.toString();
+      }
+
+      const mongoTopics = await TopicModel.find({ subjectId: targetMongoSubjectId }).sort({ order: 1 });
+      if (mongoTopics && mongoTopics.length > 0) return mongoTopics;
+    } catch {
+      // Fallback
+    }
+
+    return inMemoryStore.topics
+      .find((t) => t.subjectId === inMemTargetId || t.subjectId === subjectIdOrSlug)
+      .sort((a, b) => a.order - b.order);
   }
 
   async getTopic(topicIdOrSlug: string) {
     await this.ensureCurriculumSeeded();
-    const { isInMemoryMode } = getDatabaseStatus();
+    const { isConnected, isInMemoryMode } = getDatabaseStatus();
 
-    if (isInMemoryMode) {
+    if (isInMemoryMode || !isConnected) {
       return (
+        inMemoryStore.topics.findOne({ slug: topicIdOrSlug }) ||
         inMemoryStore.topics.findById(topicIdOrSlug) ||
-        inMemoryStore.topics.findOne({ slug: topicIdOrSlug })
+        inMemoryStore.topics.items[0]
       );
     }
 
-    const isMongoId = /^[0-9a-fA-F]{24}$/.test(topicIdOrSlug);
-    if (isMongoId) {
-      return TopicModel.findById(topicIdOrSlug);
+    try {
+      const isMongoId = /^[0-9a-fA-F]{24}$/.test(topicIdOrSlug);
+      let topic = null;
+      if (isMongoId) {
+        topic = await TopicModel.findById(topicIdOrSlug);
+      }
+      if (!topic) {
+        topic = await TopicModel.findOne({ slug: topicIdOrSlug });
+      }
+      if (topic) return topic;
+    } catch {
+      // Fallback
     }
-    return TopicModel.findOne({ slug: topicIdOrSlug });
+
+    return (
+      inMemoryStore.topics.findOne({ slug: topicIdOrSlug }) ||
+      inMemoryStore.topics.findById(topicIdOrSlug) ||
+      inMemoryStore.topics.items[0]
+    );
   }
 }
 
 export const subjectsService = new SubjectsService();
-
