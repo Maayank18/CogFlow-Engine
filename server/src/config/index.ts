@@ -60,7 +60,7 @@ export const config: AppConfig = {
     enableCloudFallback: process.env.ENABLE_CLOUD_FALLBACK !== 'false',
     ollamaHost: process.env.OLLAMA_HOST || 'http://127.0.0.1:11434',
     ollamaModel: process.env.OLLAMA_MODEL || 'qwen2.5-coder:7b',
-    ollamaTimeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || '60000', 10),
+    ollamaTimeoutMs: parseInt(process.env.OLLAMA_TIMEOUT_MS || '180000', 10),
     groqApiKey: process.env.GROQ_API_KEY || '',
     groqModel: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
     openRouterApiKey: process.env.OPENROUTER_API_KEY || '',
