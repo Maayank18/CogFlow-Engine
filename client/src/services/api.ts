@@ -303,6 +303,24 @@ class ApiClient {
   public ai = {
     getStatus: () => this.request<any>('/ai/providers/status'),
 
+    configureGroq: (apiKey: string) =>
+      this.request<{ success: boolean; message: string }>('/ai/providers/groq', {
+        method: 'POST',
+        body: JSON.stringify({ apiKey }),
+      }),
+
+    runDiagnostics: () =>
+      this.request<{
+        success: boolean;
+        data: {
+          activeProvider: string;
+          model: string;
+          latencyMs: number;
+          response?: string;
+          error?: string;
+        };
+      }>('/ai/diagnostics'),
+
     askQuestion: (data: { prompt: string; topicTitle: string; tier: string }) =>
       this.request<{ answer: string; provider: string; model: string }>('/ai/questions/answer', {
         method: 'POST',

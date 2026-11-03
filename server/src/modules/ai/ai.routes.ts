@@ -5,6 +5,8 @@ import { requireAuth } from '../../middleware/auth.js';
 const router = Router();
 
 router.get('/providers/status', aiController.getProvidersStatus.bind(aiController));
+router.post('/providers/groq', aiController.configureGroq.bind(aiController));
+router.get('/diagnostics', aiController.runDiagnostics.bind(aiController));
 
 router.use(requireAuth);
 

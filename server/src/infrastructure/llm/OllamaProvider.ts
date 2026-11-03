@@ -4,23 +4,28 @@ import { LLMProvider, LLMMessage, GenerationOptions, GenerationResponse, LLMChun
 export class OllamaProvider implements LLMProvider {
   public readonly id = 'ollama' as const;
   public readonly name = 'Local Ollama';
-  private host: string;
-  private defaultModel: string;
-  private timeoutMs: number;
 
-  constructor() {
-    this.host = config.llm.ollamaHost;
-    this.defaultModel = config.llm.ollamaModel;
-    this.timeoutMs = config.llm.ollamaTimeoutMs;
+  public get host(): string {
+    return process.env.OLLAMA_HOST || config.llm.ollamaHost || 'http://127.0.0.1:11434';
+  }
+
+  public get defaultModel(): string {
+    return process.env.OLLAMA_MODEL || config.llm.ollamaModel || 'qwen2.5-coder:7b';
+  }
+
+  public get timeoutMs(): number {
+    return parseInt(process.env.OLLAMA_TIMEOUT_MS || '180000', 10);
   }
 
   async isAvailable(): Promise<boolean> {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 2000);
+      const timeout = setTimeout(() => controller.abort(), 3000);
       const res = await fetch(`${this.host}/api/tags`, { signal: controller.signal });
       clearTimeout(timeout);
-      return res.ok;
+      if (!res.ok) return false;
+      const data = (await res.json()) as { models?: Array<{ name: string }> };
+      return Boolean(data.models && data.models.length > 0);
     } catch {
       return false;
     }

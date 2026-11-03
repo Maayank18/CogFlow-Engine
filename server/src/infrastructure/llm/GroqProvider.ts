@@ -4,16 +4,37 @@ import { LLMProvider, LLMMessage, GenerationOptions, GenerationResponse, LLMChun
 export class GroqProvider implements LLMProvider {
   public readonly id = 'groq' as const;
   public readonly name = 'Groq Cloud';
-  private apiKey: string;
-  private defaultModel: string;
 
-  constructor() {
-    this.apiKey = config.llm.groqApiKey;
-    this.defaultModel = config.llm.groqModel;
+  public get apiKey(): string {
+    return process.env.GROQ_API_KEY || config.llm.groqApiKey || '';
+  }
+
+  public get defaultModel(): string {
+    return process.env.GROQ_MODEL || config.llm.groqModel || 'llama-3.3-70b-versatile';
   }
 
   async isAvailable(): Promise<boolean> {
-    return Boolean(this.apiKey && this.apiKey.trim().length > 0);
+    const key = this.apiKey;
+    return Boolean(key && key.trim().length > 0);
+  }
+
+  async validateConnection(): Promise<{ ok: boolean; message?: string }> {
+    const key = this.apiKey;
+    if (!key || key.trim().length === 0) {
+      return { ok: false, message: 'GROQ_API_KEY is not set.' };
+    }
+
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { Authorization: `Bearer ${key.trim()}` },
+      });
+      if (res.ok) {
+        return { ok: true, message: 'Groq Cloud connection verified.' };
+      }
+      return { ok: false, message: `Groq rejected authentication (${res.status}): ${res.statusText}` };
+    } catch (err) {
+      return { ok: false, message: `Network error connecting to Groq: ${(err as Error).message}` };
+    }
   }
 
   async generate(

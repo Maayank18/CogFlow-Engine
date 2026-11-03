@@ -12,6 +12,62 @@ import {
 import { getDeterministicFallbackLesson } from './deterministicFallback.js';
 import { LessonContent, ConceptualGradingResult } from '@cogflow/shared';
 
+export function extractAndParseJson<T = any>(content: string): T {
+  const text = (content || '').trim();
+
+  // Try direct parse first
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Continue
+  }
+
+  // 1. Try markdown fenced block ```json ... ``` or ``` ... ```
+  const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenceMatch && fenceMatch[1]) {
+    try {
+      return JSON.parse(fenceMatch[1].trim());
+    } catch {
+      // Continue to bracket search
+    }
+  }
+
+  // 2. Find outermost JSON object { ... }
+  const firstBrace = text.indexOf('{');
+  const lastBrace = text.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    const candidate = text.substring(firstBrace, lastBrace + 1);
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      // Clean trailing commas before } or ] and invisible control characters
+      const cleaned = candidate
+        .replace(/,\s*([}\]])/g, '$1')
+        .replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+      try {
+        return JSON.parse(cleaned);
+      } catch {
+        // Continue
+      }
+    }
+  }
+
+  // 3. Find outermost JSON array [ ... ]
+  const firstBracket = text.indexOf('[');
+  const lastBracket = text.lastIndexOf(']');
+  if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+    const candidate = text.substring(firstBracket, lastBracket + 1);
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      const cleaned = candidate.replace(/,\s*([}\]])/g, '$1');
+      return JSON.parse(cleaned);
+    }
+  }
+
+  throw new Error(`Failed to extract valid JSON from LLM output. Raw snippet: ${text.slice(0, 150)}...`);
+}
+
 export class LLMOrchestrator {
   private static instance: LLMOrchestrator;
   private ollama: OllamaProvider;
@@ -34,7 +90,7 @@ export class LLMOrchestrator {
   public async getProvidersStatus(): Promise<{
     defaultProvider: string;
     cloudFallbackEnabled: boolean;
-    providers: Array<{ id: string; name: string; available: boolean }>;
+    providers: Array<{ id: string; name: string; available: boolean; model?: string; details?: string }>;
   }> {
     const [ollamaOk, groqOk, openRouterOk] = await Promise.all([
       this.ollama.isAvailable(),
@@ -42,16 +98,65 @@ export class LLMOrchestrator {
       this.openRouter.isAvailable(),
     ]);
 
+    const ollamaModels = ollamaOk ? await this.ollama.listAvailableModels() : [];
+
     return {
       defaultProvider: config.llm.defaultProvider,
       cloudFallbackEnabled: config.llm.enableCloudFallback,
       providers: [
-        { id: this.ollama.id, name: this.ollama.name, available: ollamaOk },
-        { id: this.groq.id, name: this.groq.name, available: groqOk },
-        { id: this.openRouter.id, name: this.openRouter.name, available: openRouterOk },
-        { id: 'fallback', name: 'Deterministic Local Engine', available: true },
+        {
+          id: this.ollama.id,
+          name: this.ollama.name,
+          available: ollamaOk,
+          model: this.ollama.defaultModel,
+          details: ollamaOk
+            ? `Connected (${ollamaModels.join(', ') || this.ollama.defaultModel})`
+            : 'Disconnected (Run `ollama serve` on http://127.0.0.1:11434)',
+        },
+        {
+          id: this.groq.id,
+          name: this.groq.name,
+          available: groqOk,
+          model: this.groq.defaultModel,
+          details: groqOk
+            ? `Connected (Fast LPU Fallback: ${this.groq.defaultModel})`
+            : 'No GROQ_API_KEY set (Optional high-speed cloud fallback)',
+        },
+        {
+          id: this.openRouter.id,
+          name: this.openRouter.name,
+          available: openRouterOk,
+          model: config.llm.openRouterModel,
+          details: openRouterOk ? 'Connected' : 'No OpenRouter key set',
+        },
+        {
+          id: 'fallback',
+          name: 'Deterministic Local Engine',
+          available: true,
+          model: 'calm-precision-v2',
+          details: 'Always Online (Guarantees zero-blank studios)',
+        },
       ],
     };
+  }
+
+  public async setAndValidateGroqKey(apiKey: string): Promise<{ ok: boolean; message: string }> {
+    if (!apiKey || apiKey.trim().length === 0) {
+      return { ok: false, message: 'API key is required.' };
+    }
+    const cleanKey = apiKey.trim();
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { Authorization: `Bearer ${cleanKey}` },
+      });
+      if (res.ok) {
+        process.env.GROQ_API_KEY = cleanKey;
+        return { ok: true, message: 'Groq Cloud API Key validated and connected successfully!' };
+      }
+      return { ok: false, message: `Groq authentication failed (${res.status}): ${res.statusText}` };
+    } catch (err) {
+      return { ok: false, message: `Connection error: ${(err as Error).message}` };
+    }
   }
 
   /**
@@ -126,9 +231,16 @@ export class LLMOrchestrator {
         jsonMode: true,
       });
 
-      // Parse and validate structured output
-      const cleaned = response.content.trim().replace(/^```json/i, '').replace(/```$/i, '').trim();
-      const parsed = JSON.parse(cleaned);
+      // Robust extraction and parsing of structured JSON from any model output
+      const parsed = extractAndParseJson(response.content);
+
+      // Prepare pedagogical fallback to fill any omitted studios
+      const fallback = getDeterministicFallbackLesson({
+        topicTitle: params.topicTitle,
+        subjectTitle: params.subjectTitle,
+        tier: params.tier,
+        topicId: params.topicId,
+      });
 
       return {
         id: `lesson-${params.topicId}-${params.tier}`,
@@ -136,28 +248,31 @@ export class LLMOrchestrator {
         topicTitle: params.topicTitle,
         subjectTitle: params.subjectTitle,
         tier: params.tier,
-        summary: parsed.summary || `${params.topicTitle} in depth.`,
-        learningObjectives: parsed.learningObjectives || ['Master the core concepts'],
-        sections: parsed.sections || [],
-        visualDiagram: parsed.visualDiagram || {
-          id: 'diag-fallback',
-          type: 'mermaid',
-          title: `Flow for ${params.topicTitle}`,
-          caption: 'Interactive diagram',
-          mermaidCode: 'graph TD\n A[Start] --> B[Process]',
-          stages: [],
-        },
-        codeExample: parsed.codeExample || {
-          id: 'code-fallback',
-          language: 'typescript',
-          title: 'Implementation',
-          code: '// Implementation',
-          explanation: 'Walkthrough',
-          complexity: { time: 'O(n)', space: 'O(1)' },
-          edgeCases: [],
-        },
-        revisionNotes: parsed.revisionNotes || [],
-        practiceQuestions: parsed.practiceQuestions || [],
+        summary: parsed.summary || fallback.summary,
+        learningObjectives:
+          Array.isArray(parsed.learningObjectives) && parsed.learningObjectives.length > 0
+            ? parsed.learningObjectives
+            : fallback.learningObjectives,
+        sections:
+          Array.isArray(parsed.sections) && parsed.sections.length > 0
+            ? parsed.sections
+            : fallback.sections,
+        visualDiagram:
+          parsed.visualDiagram && parsed.visualDiagram.mermaidCode
+            ? parsed.visualDiagram
+            : fallback.visualDiagram,
+        codeExample:
+          parsed.codeExample && parsed.codeExample.code
+            ? parsed.codeExample
+            : fallback.codeExample,
+        revisionNotes:
+          Array.isArray(parsed.revisionNotes) && parsed.revisionNotes.length > 0
+            ? parsed.revisionNotes
+            : fallback.revisionNotes,
+        practiceQuestions:
+          Array.isArray(parsed.practiceQuestions) && parsed.practiceQuestions.length > 0
+            ? parsed.practiceQuestions
+            : fallback.practiceQuestions,
         sourceReferences: params.documentContext ? [{ documentTitle: 'Syllabus Ingestion', pageNumber: 1 }] : [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -196,8 +311,7 @@ export class LLMOrchestrator {
         temperature: 0.2,
       });
 
-      const cleaned = response.content.trim().replace(/^```json/i, '').replace(/```$/i, '').trim();
-      const parsed = JSON.parse(cleaned);
+      const parsed = extractAndParseJson(response.content);
 
       return {
         score: Math.min(params.maxScore, Math.max(0, parsed.score ?? Math.round(params.maxScore * 0.8))),
@@ -263,8 +377,7 @@ export class LLMOrchestrator {
         jsonMode: true,
       });
 
-      const cleaned = response.content.trim().replace(/^```json/i, '').replace(/```$/i, '').trim();
-      return JSON.parse(cleaned);
+      return extractAndParseJson(response.content);
     } catch (err) {
       console.warn(`[LLMOrchestrator] Syllabus extraction fallback: ${(err as Error).message}`);
       // Fallback heuristics: find lines with Chapter/Unit/Week/Topic

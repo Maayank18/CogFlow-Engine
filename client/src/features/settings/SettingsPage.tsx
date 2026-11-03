@@ -17,6 +17,11 @@ import {
   Save,
   CheckCircle2,
   Trash2,
+  Zap,
+  Sparkles,
+  Key,
+  RefreshCw,
+  Server,
 } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
@@ -30,18 +35,60 @@ export const SettingsPage: React.FC = () => {
   const [telemetryConsent, setTelemetryConsent] = useState(preferences?.behavioralTelemetryConsent ?? true);
   const [aiStatus, setAiStatus] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [groqKeyInput, setGroqKeyInput] = useState('');
+  const [isConnectingGroq, setIsConnectingGroq] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<any>(null);
+  const [isRunningDiagnostic, setIsRunningDiagnostic] = useState(false);
+
+  const fetchAIStatus = async () => {
+    try {
+      const data = await api.ai.getStatus();
+      setAiStatus(data);
+    } catch (err) {
+      // Fallback
+    }
+  };
 
   useEffect(() => {
-    const fetchAIStatus = async () => {
-      try {
-        const data = await api.ai.getStatus();
-        setAiStatus(data);
-      } catch (err) {
-        // Fallback
-      }
-    };
     fetchAIStatus();
   }, []);
+
+  const handleConnectGroq = async () => {
+    if (!groqKeyInput.trim()) return;
+    setIsConnectingGroq(true);
+    try {
+      const res = await api.ai.configureGroq(groqKeyInput.trim());
+      if (res.success) {
+        success('Groq Connected', res.message);
+        setGroqKeyInput('');
+        await fetchAIStatus();
+      } else {
+        error('Groq Connection Failed', res.message);
+      }
+    } catch (err) {
+      error('Groq Error', (err as Error).message);
+    } finally {
+      setIsConnectingGroq(false);
+    }
+  };
+
+  const handleRunDiagnostic = async () => {
+    setIsRunningDiagnostic(true);
+    setDiagnosticResult(null);
+    try {
+      const res = await api.ai.runDiagnostics();
+      setDiagnosticResult(res.data);
+      if (res.success) {
+        success('Diagnostics Passed', `Active: ${res.data.activeProvider} (${res.data.latencyMs}ms)`);
+      } else {
+        error('Diagnostics Fallback', res.data.error || 'Fell back to deterministic engine');
+      }
+    } catch (err) {
+      error('Diagnostic Error', (err as Error).message);
+    } finally {
+      setIsRunningDiagnostic(false);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,29 +270,115 @@ export const SettingsPage: React.FC = () => {
           </div>
         </Card>
 
-        {/* AI Engine Status (Read-Only) */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-            <Cpu className="w-4 h-4 text-purple-500" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              AI Orchestration Providers
-            </h3>
+        {/* AI Engine & LLM Orchestration Status */}
+        <Card className="p-6 space-y-5">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-purple-500" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  AI Orchestration & Multi-Tier Fallback
+                </h3>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Default Provider: <span className="font-mono font-bold text-blue-600 dark:text-blue-400 uppercase">{aiStatus?.defaultProvider || 'ollama'}</span> • Cloud Fallback: <span className="font-semibold text-emerald-600 dark:text-emerald-400">Active</span>
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleRunDiagnostic}
+              disabled={isRunningDiagnostic}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all active:scale-95 disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRunningDiagnostic ? 'animate-spin text-blue-500' : ''}`} />
+              <span>{isRunningDiagnostic ? 'Testing AI Pipeline...' : 'Run Diagnostics'}</span>
+            </button>
           </div>
 
+          {/* Diagnostic Result Banner if run */}
+          {diagnosticResult && (
+            <div className={`p-3.5 rounded-xl border text-xs flex items-center justify-between ${
+              diagnosticResult.activeProvider !== 'fallback'
+                ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500/30 text-emerald-800 dark:text-emerald-300'
+                : 'bg-amber-50 dark:bg-amber-950/30 border-amber-500/30 text-amber-800 dark:text-amber-300'
+            }`}>
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 shrink-0" />
+                <span>
+                  Active Provider: <strong>{diagnosticResult.activeProvider}</strong> ({diagnosticResult.model})
+                </span>
+              </div>
+              <span className="font-mono text-[11px] font-bold">
+                Latency: {diagnosticResult.latencyMs}ms
+              </span>
+            </div>
+          )}
+
+          {/* Provider Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             {aiStatus?.providers?.map((p: any) => (
               <div
                 key={p.id}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between"
+                className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 flex flex-col justify-between space-y-2"
               >
-                <span className="font-semibold text-slate-800 dark:text-slate-200">{p.name}</span>
-                <Badge size="sm" variant={p.available ? 'flow' : 'neutral'}>
-                  {p.available ? 'Online' : 'Offline'}
-                </Badge>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {p.id === 'ollama' ? (
+                      <Server className="w-4 h-4 text-blue-500" />
+                    ) : p.id === 'groq' ? (
+                      <Zap className="w-4 h-4 text-amber-500" />
+                    ) : (
+                      <Cpu className="w-4 h-4 text-purple-500" />
+                    )}
+                    <span className="font-bold text-slate-800 dark:text-slate-200">{p.name}</span>
+                  </div>
+                  <Badge size="sm" variant={p.available ? 'flow' : 'neutral'} dot>
+                    {p.available ? 'Online' : 'Offline'}
+                  </Badge>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">
+                  {p.details || (p.available ? 'Connected & Operational' : 'Standby')}
+                </div>
               </div>
             )) || (
-              <p className="text-xs text-slate-400">Local engine operational.</p>
+              <p className="text-xs text-slate-400">Loading AI status...</p>
             )}
+          </div>
+
+          {/* Connect Groq API Key Failsafe Box */}
+          <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Key className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                  Groq Cloud High-Speed Failsafe (Optional)
+                </span>
+              </div>
+              <span className="text-[10px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
+                500+ tok/s Ultra-Fast LPU
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              If local Ollama takes time on your device or goes offline, Groq provides instant failover generation in ~1 second. Enter a free API key from <code>console.groq.com</code>:
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                placeholder="Enter Groq API Key (gsk_...)"
+                value={groqKeyInput}
+                onChange={(e) => setGroqKeyInput(e.target.value)}
+                className="flex-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+              />
+              <button
+                type="button"
+                onClick={handleConnectGroq}
+                disabled={isConnectingGroq || !groqKeyInput.trim()}
+                className="px-4 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-all disabled:opacity-50 active:scale-95 shrink-0"
+              >
+                {isConnectingGroq ? 'Verifying...' : 'Connect Groq'}
+              </button>
+            </div>
           </div>
         </Card>
 

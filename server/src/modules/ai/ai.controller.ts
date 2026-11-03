@@ -12,6 +12,52 @@ export class AIController {
     });
   }
 
+  async configureGroq(req: Request, res: Response): Promise<void> {
+    try {
+      const { apiKey } = req.body;
+      const result = await this.llmOrchestrator.setAndValidateGroqKey(apiKey);
+      res.json({
+        success: result.ok,
+        message: result.message,
+      });
+    } catch (err) {
+      res.status(400).json({
+        success: false,
+        message: (err as Error).message,
+      });
+    }
+  }
+
+  async runDiagnostics(req: Request, res: Response): Promise<void> {
+    const startTime = Date.now();
+    try {
+      const prompt = 'Respond with JSON: {"status": "ok", "message": "CogFlow AI Diagnostics Verified"}';
+      const result = await this.llmOrchestrator.executeWithFallback(prompt, {
+        jsonMode: true,
+        temperature: 0.1,
+      });
+      res.json({
+        success: true,
+        data: {
+          activeProvider: result.provider,
+          model: result.model,
+          latencyMs: Date.now() - startTime,
+          response: result.content,
+        },
+      });
+    } catch (err) {
+      res.json({
+        success: false,
+        data: {
+          activeProvider: 'fallback',
+          model: 'deterministic-pedagogical-engine',
+          latencyMs: Date.now() - startTime,
+          error: (err as Error).message,
+        },
+      });
+    }
+  }
+
   async streamChat(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { prompt, topicTitle, tier } = req.body;
