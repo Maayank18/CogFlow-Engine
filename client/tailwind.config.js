@@ -52,17 +52,22 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'Menlo', 'monospace'],
       },
       boxShadow: {
         subtle: '0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 1px 3px 0 rgba(0, 0, 0, 0.02)',
         card: '0 2px 8px -2px rgba(15, 23, 42, 0.06), 0 1px 4px -1px rgba(15, 23, 42, 0.04)',
         elevated: '0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04)',
+        glowCyan: '0 0 50px -10px rgba(6, 182, 212, 0.35)',
+        glowPurple: '0 0 50px -10px rgba(168, 85, 247, 0.35)',
+        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.08)',
       },
       animation: {
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'progress-shimmer': 'shimmer 2s infinite linear',
+        'spin-slow': 'spin 16s linear infinite',
       },
       keyframes: {
         shimmer: {

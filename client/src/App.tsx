@@ -37,7 +37,7 @@ const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<MainView>('dashboard');
   const [activeCockpitTopicId, setActiveCockpitTopicId] = useState<string | null>(null);
   const [activeCockpitTier, setActiveCockpitTier] = useState<'B' | 'A' | 'S'>('A');
-  const [showLandingPreview, setShowLandingPreview] = useState(false);
+  const [showLandingPreview, setShowLandingPreview] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
