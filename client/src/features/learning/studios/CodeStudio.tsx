@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { CodeExampleData } from '@cogflow/shared';
-import { Card } from '../../../components/ui/Card.js';
-import { Button } from '../../../components/ui/Button.js';
-import { Badge } from '../../../components/ui/Badge.js';
+import { Card } from '../../../components/ui/Card';
+import { Button } from '../../../components/ui/Button';
+import { Badge } from '../../../components/ui/Badge';
 import { Copy, Check, Terminal, Clock, Database, AlertTriangle, ArrowRight } from 'lucide-react';
 
 export interface CodeStudioProps {

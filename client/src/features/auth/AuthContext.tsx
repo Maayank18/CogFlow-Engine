@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, UserPreferencesData } from '@cogflow/shared';
-import { api } from '../../services/api.js';
+import { api } from '../../services/api';
 
 interface AuthContextType {
   user: UserProfile | null;

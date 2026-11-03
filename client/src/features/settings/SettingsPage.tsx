@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '../../components/ui/Card.js';
-import { Button } from '../../components/ui/Button.js';
-import { Input } from '../../components/ui/Input.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { useAuth } from '../auth/AuthContext.js';
-import { useTheme } from '../../design-system/theme.js';
-import { useToast } from '../../components/ui/Toast.js';
-import { api } from '../../services/api.js';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
+import { useAuth } from '../auth/AuthContext';
+import { useTheme } from '../../design-system/theme';
+import { useToast } from '../../components/ui/Toast';
+import { api } from '../../services/api';
 import {
   User,
   Sun,

@@ -7,7 +7,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      mermaid: path.resolve(__dirname, '../node_modules/mermaid/dist/mermaid.js'),
     },
   },
   server: {

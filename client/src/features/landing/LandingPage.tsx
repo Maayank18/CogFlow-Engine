@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from '../../components/ui/Button.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { Card } from '../../components/ui/Card.js';
-import { useTheme } from '../../design-system/theme.js';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { Card } from '../../components/ui/Card';
+import { useTheme } from '../../design-system/theme';
 import {
   Brain,
   Layers,

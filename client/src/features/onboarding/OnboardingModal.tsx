@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Modal } from '../../components/ui/Modal.js';
-import { Button } from '../../components/ui/Button.js';
-import { Input } from '../../components/ui/Input.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { useAuth } from '../auth/AuthContext.js';
-import { useToast } from '../../components/ui/Toast.js';
+import { Modal } from '../../components/ui/Modal';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Badge } from '../../components/ui/Badge';
+import { useAuth } from '../auth/AuthContext';
+import { useToast } from '../../components/ui/Toast';
 import { Shield, Sparkles, Camera, BookOpen, Layers } from 'lucide-react';
 
 export interface OnboardingModalProps {

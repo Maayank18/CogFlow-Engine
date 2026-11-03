@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { UploadedDocumentData } from '@cogflow/shared';
-import { api } from '../../services/api.js';
-import { Card } from '../../components/ui/Card.js';
-import { Button } from '../../components/ui/Button.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { useToast } from '../../components/ui/Toast.js';
+import { api } from '../../services/api';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { useToast } from '../../components/ui/Toast';
 import {
   UploadCloud,
   FileText,

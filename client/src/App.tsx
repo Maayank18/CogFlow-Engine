@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { ThemeProvider, useTheme } from './design-system/theme.js';
-import { ToastProvider } from './components/ui/Toast.js';
-import { AuthProvider, useAuth } from './features/auth/AuthContext.js';
-import { LandingPage } from './features/landing/LandingPage.js';
-import { AuthPage } from './features/auth/AuthPage.js';
-import { OnboardingModal } from './features/onboarding/OnboardingModal.js';
-import { DashboardPage } from './features/dashboard/DashboardPage.js';
-import { SubjectCatalogPage } from './features/subjects/SubjectCatalogPage.js';
-import { DocumentUploadPage } from './features/documents/DocumentUploadPage.js';
-import { AnalyticsPage } from './features/analytics/AnalyticsPage.js';
-import { SettingsPage } from './features/settings/SettingsPage.js';
-import { LearningCockpit } from './features/learning/LearningCockpit.js';
-import { Button } from './components/ui/Button.js';
-import { Badge } from './components/ui/Badge.js';
+import { ThemeProvider, useTheme } from './design-system/theme';
+import { ToastProvider } from './components/ui/Toast';
+import { AuthProvider, useAuth } from './features/auth/AuthContext';
+import { LandingPage } from './features/landing/LandingPage';
+import { AuthPage } from './features/auth/AuthPage';
+import { OnboardingModal } from './features/onboarding/OnboardingModal';
+import { DashboardPage } from './features/dashboard/DashboardPage';
+import { SubjectCatalogPage } from './features/subjects/SubjectCatalogPage';
+import { DocumentUploadPage } from './features/documents/DocumentUploadPage';
+import { AnalyticsPage } from './features/analytics/AnalyticsPage';
+import { SettingsPage } from './features/settings/SettingsPage';
+import { LearningCockpit } from './features/learning/LearningCockpit';
+import { Button } from './components/ui/Button';
+import { Badge } from './components/ui/Badge';
 import {
   LayoutDashboard,
   BookOpen,

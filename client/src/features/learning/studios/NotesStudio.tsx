@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { RevisionNoteItem } from '@cogflow/shared';
-import { Card } from '../../../components/ui/Card.js';
-import { Button } from '../../../components/ui/Button.js';
-import { Badge } from '../../../components/ui/Badge.js';
-import { Input } from '../../../components/ui/Input.js';
-import { useToast } from '../../../components/ui/Toast.js';
-import { api } from '../../../services/api.js';
+import { Card } from '../../../components/ui/Card';
+import { Button } from '../../../components/ui/Button';
+import { Badge } from '../../../components/ui/Badge';
+import { Input } from '../../../components/ui/Input';
+import { useToast } from '../../../components/ui/Toast';
+import { api } from '../../../services/api';
 import { BookOpen, AlertOctagon, RotateCw, Plus, Tag, Pin } from 'lucide-react';
 
 export interface NotesStudioProps {

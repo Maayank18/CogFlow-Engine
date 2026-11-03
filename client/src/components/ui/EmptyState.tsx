@@ -1,6 +1,6 @@
 import React from 'react';
 import { clsx } from 'clsx';
-import { Button } from './Button.js';
+import { Button } from './Button';
 
 export interface EmptyStateProps {
   icon?: React.ReactNode;

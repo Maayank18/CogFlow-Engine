@@ -5,21 +5,21 @@ import {
   LessonContent,
   AdaptationRecommendation,
 } from '@cogflow/shared';
-import { api } from '../../services/api.js';
-import { useAuth } from '../auth/AuthContext.js';
-import { useToast } from '../../components/ui/Toast.js';
-import { useCognitiveTelemetry } from '../cognitive/useCognitiveTelemetry.js';
-import { use30SecondInvariant } from '../cognitive/use30SecondInvariant.js';
+import { api } from '../../services/api';
+import { useAuth } from '../auth/AuthContext';
+import { useToast } from '../../components/ui/Toast';
+import { useCognitiveTelemetry } from '../cognitive/useCognitiveTelemetry';
+import { use30SecondInvariant } from '../cognitive/use30SecondInvariant';
 
-import { LearnStudio } from './studios/LearnStudio.js';
-import { VisualStudio } from './studios/VisualStudio.js';
-import { CodeStudio } from './studios/CodeStudio.js';
-import { NotesStudio } from './studios/NotesStudio.js';
-import { PracticeStudio } from './studios/PracticeStudio.js';
+import { LearnStudio } from './studios/LearnStudio';
+import { VisualStudio } from './studios/VisualStudio';
+import { CodeStudio } from './studios/CodeStudio';
+import { NotesStudio } from './studios/NotesStudio';
+import { PracticeStudio } from './studios/PracticeStudio';
 
-import { Button } from '../../components/ui/Button.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { Card } from '../../components/ui/Card.js';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { Card } from '../../components/ui/Card';
 
 import {
   BookOpen,

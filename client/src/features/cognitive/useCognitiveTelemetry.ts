@@ -4,8 +4,8 @@ import {
   CognitiveState,
   CognitiveProbabilities,
 } from '@cogflow/shared';
-import { developmentMockProvider, SimulationScenario } from './DevelopmentMockProvider.js';
-import { ExternalModelAdapter } from './ExternalModelAdapter.js';
+import { developmentMockProvider, SimulationScenario } from './DevelopmentMockProvider';
+import { ExternalModelAdapter } from './ExternalModelAdapter';
 
 export interface UseCognitiveTelemetryOptions {
   enableCameraDefault?: boolean;

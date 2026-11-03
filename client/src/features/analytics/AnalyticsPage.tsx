@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { LearningAnalyticsOverview } from '@cogflow/shared';
-import { api } from '../../services/api.js';
-import { Card } from '../../components/ui/Card.js';
-import { Badge } from '../../components/ui/Badge.js';
+import { api } from '../../services/api';
+import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
 import {
   Activity,
   Clock,

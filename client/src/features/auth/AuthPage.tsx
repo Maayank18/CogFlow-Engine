@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Card } from '../../components/ui/Card.js';
-import { Button } from '../../components/ui/Button.js';
-import { Input } from '../../components/ui/Input.js';
-import { useAuth } from './AuthContext.js';
-import { useToast } from '../../components/ui/Toast.js';
-import { api } from '../../services/api.js';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { useAuth } from './AuthContext';
+import { useToast } from '../../components/ui/Toast';
+import { api } from '../../services/api';
 import { ArrowLeft, Lock, Mail, User } from 'lucide-react';
 
 export interface AuthPageProps {

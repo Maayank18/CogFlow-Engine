@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ConceptSection } from '@cogflow/shared';
 import { ChevronDown, ChevronRight, HelpCircle, CheckCircle, Lightbulb } from 'lucide-react';
-import { Card } from '../../../components/ui/Card.js';
-import { Badge } from '../../../components/ui/Badge.js';
+import { Card } from '../../../components/ui/Card';
+import { Badge } from '../../../components/ui/Badge';
 
 export interface LearnStudioProps {
   sections: ConceptSection[];

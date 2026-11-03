@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { DevelopmentMockProvider } from '../features/cognitive/DevelopmentMockProvider.js';
-import { ExternalModelAdapter } from '../features/cognitive/ExternalModelAdapter.js';
+import { DevelopmentMockProvider } from '../features/cognitive/DevelopmentMockProvider';
+import { ExternalModelAdapter } from '../features/cognitive/ExternalModelAdapter';
 
 describe('Cognitive Telemetry Provider Contracts', () => {
   it('DevelopmentMockProvider emits FLOW state under natural_flow scenario', async () => {

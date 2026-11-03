@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '../../components/ui/Card.js';
-import { Button } from '../../components/ui/Button.js';
-import { Badge } from '../../components/ui/Badge.js';
-import { useAuth } from '../auth/AuthContext.js';
-import { api } from '../../services/api.js';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
+import { useAuth } from '../auth/AuthContext';
+import { api } from '../../services/api';
 import {
   LearningAnalyticsOverview,
   LearningSessionSummary,
