@@ -15,9 +15,7 @@ import {
   Sun,
   Moon,
   ChevronRight,
-  Compass,
   FileText,
-  RotateCw,
   Zap,
 } from 'lucide-react';
 
@@ -35,41 +33,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
     B: {
       name: 'Foundations (Tier B)',
       subtitle: 'Cognitive Overload Reduction • Intuitive Mental Models',
-      explanation: 'Simplifies pedagogical complexity, breaking down distributed consensus into a relatable high-school voting committee analogy with animated state transitions.',
-      features: ['Analogy-first explanations', 'Simplified visual flows', 'Isolated core concepts', 'Guided self-check practice'],
+      explanation:
+        'Simplifies pedagogical complexity, breaking down distributed consensus into a relatable high-school voting committee analogy with animated state transitions.',
+      features: [
+        'Analogy-first explanations',
+        'Simplified visual flows',
+        'Isolated core concepts',
+        'Guided self-check practice',
+      ],
       accent: 'text-emerald-500 border-emerald-500/30 bg-emerald-500/10',
     },
     A: {
       name: 'Core Engineering (Tier A)',
       subtitle: 'Optimal Flow State • Production-Grade Systems',
-      explanation: 'Balanced technical rigor delivering production Raft consensus: leader election heartbeats, term monotonicity, log replication consistency, and safety invariants.',
-      features: ['Production algorithms & code', 'Full architectural flowcharts', 'Failure-recovery mechanics', 'Conceptual rubric evaluation'],
+      explanation:
+        'Balanced technical rigor delivering production Raft consensus: leader election heartbeats, term monotonicity, log replication consistency, and safety invariants.',
+      features: [
+        'Production algorithms & code',
+        'Full architectural flowcharts',
+        'Failure-recovery mechanics',
+        'Conceptual rubric evaluation',
+      ],
       accent: 'text-blue-500 border-blue-500/30 bg-blue-500/10',
     },
     S: {
       name: 'Advanced Systems (Tier S)',
       subtitle: 'Boredom Countermeasure • Edge-Cases & Formal Verification',
-      explanation: 'Accelerates pedagogical depth into split-brain network partitions, joint consensus configuration changes, formal TLA+ verification, and zero-copy replication.',
-      features: ['Formal verification proofs', 'Split-brain edge case analysis', 'High-throughput optimizations', 'Deep synthesis challenges'],
+      explanation:
+        'Accelerates pedagogical depth into split-brain network partitions, joint consensus configuration changes, formal TLA+ verification, and zero-copy replication.',
+      features: [
+        'Formal verification proofs',
+        'Split-brain edge case analysis',
+        'High-throughput optimizations',
+        'Deep synthesis challenges',
+      ],
       accent: 'text-purple-500 border-purple-500/30 bg-purple-500/10',
     },
   };
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] dark:bg-[#07090e] text-slate-800 dark:text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden transition-colors duration-300">
-      {/* Ambient Background Radial Glows */}
+    <div className="min-h-screen bg-[#fafbfc] dark:bg-[#06080e] text-slate-800 dark:text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white relative overflow-x-hidden transition-colors duration-500">
+      {/* Dynamic Animated Ambient Auroras */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-[15%] left-[20%] w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-cyan-400/15 via-blue-500/10 to-indigo-500/15 dark:from-cyan-500/20 dark:via-blue-600/10 dark:to-purple-600/20 blur-[140px] transform-gpu" />
-        <div className="absolute top-[40%] -right-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-br from-purple-400/15 via-pink-500/10 to-amber-400/15 dark:from-purple-600/15 dark:via-rose-600/10 dark:to-blue-600/15 blur-[150px] transform-gpu" />
-        <div className="absolute bottom-[5%] left-[5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-teal-400/10 via-cyan-400/10 to-blue-500/10 dark:from-teal-500/15 dark:via-blue-600/10 dark:to-indigo-600/10 blur-[130px] transform-gpu" />
+        <div className="absolute -top-[18%] left-[15%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-cyan-400/20 via-blue-500/15 to-indigo-600/20 dark:from-cyan-500/25 dark:via-blue-600/15 dark:to-purple-600/25 blur-[140px] animate-aurora-glow transform-gpu" />
+        <div className="absolute top-[35%] -right-[12%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-purple-400/20 via-pink-500/15 to-amber-400/20 dark:from-purple-600/20 dark:via-rose-600/15 dark:to-blue-600/20 blur-[150px] animate-aurora-glow transform-gpu" />
+        <div className="absolute bottom-[2%] left-[8%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-teal-400/15 via-cyan-400/15 to-blue-500/15 dark:from-teal-500/20 dark:via-blue-600/15 dark:to-indigo-600/20 blur-[130px] animate-aurora-glow transform-gpu" />
       </div>
 
-      {/* Floating Modern Pill Header */}
+      {/* Floating Modern Pill Navigation Header */}
       <header className="fixed top-6 inset-x-0 z-50 flex justify-center px-4">
-        <nav className="w-full max-w-5xl rounded-full bg-white/70 dark:bg-[#0c1017]/70 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 px-5 py-3 flex items-center justify-between shadow-glass">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-sm tracking-tight">
+        <nav className="w-full max-w-5xl rounded-full glass-panel px-6 py-3 flex items-center justify-between shadow-glass">
+          {/* Brand Logo with Radial Shimmer */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-blue-500/25 tracking-tight">
               CF
             </div>
             <div className="flex flex-col">
@@ -82,18 +98,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
             </div>
           </div>
 
-          {/* Center Navigation Links */}
-          <div className="hidden md:flex items-center gap-7 text-xs font-semibold text-slate-600 dark:text-slate-300">
-            <a href="#philosophy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+          {/* Center Navigation Links with Hover Micro-Glow */}
+          <div className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <a href="#philosophy" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
               Philosophy
             </a>
-            <a href="#studios" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <a href="#studios" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
               5 Studios
             </a>
-            <a href="#matrix" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <a href="#matrix" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
               Adaptive Matrix
             </a>
-            <a href="#privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <a href="#privacy" className="hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
               Privacy Invariant
             </a>
           </div>
@@ -103,16 +119,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
             <button
               onClick={toggleTheme}
               className="w-9 h-9 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
-              title="Toggle theme"
+              title="Toggle Light/Dark Theme"
             >
-              {resolvedTheme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+              {resolvedTheme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-700" />
+              )}
             </button>
 
             <button
               onClick={onStartLearning}
-              className="group inline-flex items-center gap-2 pl-4 pr-2.5 py-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-xs font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 active:scale-95"
+              className="group inline-flex items-center gap-2 pl-4 pr-2.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 text-xs font-bold transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95"
             >
-              <span>Launch Studio</span>
+              <span>Launch Cockpit</span>
               <div className="w-6 h-6 rounded-full bg-white/20 dark:bg-black/10 flex items-center justify-center group-hover:rotate-45 transition-transform duration-200">
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </div>
@@ -123,32 +143,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
 
       {/* Hero Section */}
       <section className="relative z-10 pt-36 pb-20 px-6 max-w-6xl mx-auto flex flex-col items-center">
-        {/* Accent Tag */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/90 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-xs font-medium text-slate-700 dark:text-slate-300 mb-8 backdrop-blur-md">
-          {/* Neon Star Accent from reference */}
-          <svg className="w-4 h-4 text-lime-500 fill-lime-500 animate-spin-slow" viewBox="0 0 24 24">
+        {/* Accent Tag with Neon Lime Spark Element & Radar Ping */}
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-panel text-xs font-medium text-slate-700 dark:text-slate-300 mb-8 shadow-sm">
+          {/* Neon Star Spark */}
+          <svg className="w-4 h-4 text-lime-500 dark:text-lime-400 fill-current animate-spin-slow drop-shadow-[0_0_8px_rgba(163,230,53,0.7)]" viewBox="0 0 24 24">
             <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
           </svg>
-          <span className="font-semibold text-slate-900 dark:text-white">Cognitive Invariant 2.0</span>
-          <span className="text-slate-400">·</span>
+          <span className="font-bold text-slate-900 dark:text-white tracking-tight">Cognitive Invariant 2.0</span>
+          <span className="text-slate-300 dark:text-slate-600">|</span>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+          </span>
           <span className="text-teal-600 dark:text-teal-400 font-semibold">Real-Time Depth Calibration</span>
         </div>
 
-        {/* Hero Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white text-center leading-[1.08] max-w-4xl">
-          Empower Deep Tech Mastery <br className="hidden sm:inline" />
-          with <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-teal-400 bg-clip-text text-transparent">Cognitive Intelligence</span>
+        {/* Master Typographic Headline Pairing Ultra-Bold & Luxury Cursive Italic */}
+        <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-slate-900 dark:text-white text-center leading-[1.04] max-w-5xl">
+          Empower Your Mind <br />
+          with <span className="font-cursive font-normal text-6xl sm:text-8xl md:text-9xl text-blue-600 dark:text-cyan-400 px-1 inline-block hover:scale-105 transition-transform duration-300 cursor-default">Adaptive</span>{' '}
+          <span className="text-gradient-iridescent font-black tracking-tight">Excellence</span>
         </h1>
 
-        <p className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-400 text-center max-w-2xl leading-relaxed font-normal">
-          Rather than forcing every engineer through static video slides, CogFlow continuously perceives cognitive load, flow, and boredom—calibrating pedagogical depth across 5 multi-modal studios.
+        <p className="mt-7 text-base sm:text-xl text-slate-600 dark:text-slate-300 text-center max-w-2xl leading-relaxed font-normal">
+          Rather than forcing every learner through static, one-size-fits-all curricula, CogFlow perceives cognitive load, flow, and boredom—continuously calibrating pedagogical depth across five coordinated studios.
         </p>
 
         {/* CTA Button Row */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={onStartLearning}
-            className="group inline-flex items-center gap-3 pl-6 pr-3.5 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition-all duration-200 active:scale-95"
+            className="group inline-flex items-center gap-3.5 pl-7 pr-4 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-500/30 transition-all duration-200 active:scale-95 hover:shadow-glowCyan"
           >
             <span>Enter Studio Cockpit</span>
             <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform duration-200">
@@ -158,7 +183,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
 
           <a
             href="#matrix"
-            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-semibold text-sm border border-slate-200 dark:border-white/10 transition-all duration-200 backdrop-blur-md"
+            className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full glass-panel hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-all duration-200 shadow-sm"
           >
             <span>Explore Adaptive Matrix</span>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
@@ -166,37 +191,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
         </div>
 
         {/* Centerpiece Layout (Center 3D Orb flanked by narrative and stats) */}
-        <div className="mt-16 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="mt-16 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" id="philosophy">
           {/* Left Narrative Pillar */}
           <div className="lg:col-span-3 text-left space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400 block font-mono">
               The Cognitive Loop
             </span>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug">
-              Perceive. Interpret. Adapt. Teach. Evaluate.
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white leading-snug">
+              Where <span className="font-cursive text-2xl font-normal text-indigo-600 dark:text-indigo-400">Human Capacity</span> Meets Deep Engineering.
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              At CogFlow, learning is dynamic. When cognitive overload is sustained for 30s, the engine seamlessly reduces pedagogical density without breaking your concentration.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+              At CogFlow, learning is dynamic. When cognitive overload is sustained for 30 seconds, the engine automatically simplifies pedagogical density without breaking your focus.
             </p>
             <div className="pt-2">
-              <div className="inline-flex items-center gap-2 text-xs font-semibold text-teal-600 dark:text-teal-400">
-                <ShieldCheck className="w-4 h-4" />
-                <span>100% On-Device Processing</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-900/60 text-xs font-semibold text-teal-700 dark:text-teal-300">
+                <ShieldCheck className="w-4 h-4 text-teal-500" />
+                <span>100% Privacy Preserved (On-Device)</span>
               </div>
             </div>
           </div>
 
           {/* Center 3D Topological Cognitive Neural Orb */}
           <div className="lg:col-span-6 flex flex-col items-center justify-center">
-            <CognitiveNeuralOrb mode={orbMode} size={380} />
+            <CognitiveNeuralOrb mode={orbMode} size={390} />
 
             {/* Interactive Mode Selector Pills */}
-            <div className="mt-4 flex items-center gap-2 p-1.5 rounded-full bg-white/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-xl shadow-sm">
+            <div className="mt-4 flex items-center gap-2 p-1.5 rounded-full glass-panel shadow-sm">
               <button
                 onClick={() => setOrbMode('flow')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   orbMode === 'flow'
-                    ? 'bg-teal-600 text-white shadow-sm'
+                    ? 'bg-teal-600 text-white shadow-md shadow-teal-500/25'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -204,9 +229,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
               </button>
               <button
                 onClick={() => setOrbMode('overload')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   orbMode === 'overload'
-                    ? 'bg-rose-600 text-white shadow-sm'
+                    ? 'bg-rose-600 text-white shadow-md shadow-rose-500/25'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -214,55 +239,55 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
               </button>
               <button
                 onClick={() => setOrbMode('boredom')}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
                   orbMode === 'boredom'
-                    ? 'bg-indigo-600 text-white shadow-sm'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 ■ Boredom (Deepen Challenge)
               </button>
             </div>
-            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 font-mono">
+            <span className="text-[11px] text-slate-400 dark:text-slate-500 mt-2.5 font-mono">
               Click any state to test real-time topological mesh resonance
             </span>
           </div>
 
           {/* Right Asymmetric High-Impact Stats */}
-          <div className="lg:col-span-3 space-y-6 text-left lg:pl-6">
-            <div className="space-y-1">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display">
+          <div className="lg:col-span-3 space-y-7 text-left lg:pl-6">
+            <div className="space-y-1 group cursor-default">
+              <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-display text-gradient-iridescent">
                 30s
               </div>
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
                 Sustained Adaptation Invariant
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                Eliminates UI flickering and transient glance noise.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Prevents UI oscillation by requiring sustained signals before recalibrating depth.
               </p>
             </div>
 
-            <div className="space-y-1">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display">
+            <div className="space-y-1 group cursor-default">
+              <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-display text-gradient-iridescent">
                 5 Studios
               </div>
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                Multi-Modal Knowledge Delivery
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
+                Multi-Modal Knowledge Modalities
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                Learn, Visual, Code, Notes, and Practice.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Learn, Visual, Code, Notes, and Practice Studios.
               </p>
             </div>
 
-            <div className="space-y-1">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display">
+            <div className="space-y-1 group cursor-default">
+              <div className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-display text-gradient-iridescent">
                 3 Tiers
               </div>
-              <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
                 Foundations · Core · Advanced
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                Tri-level calibrated content per concept.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Seamless depth progression calibrated per concept.
               </p>
             </div>
           </div>
@@ -270,30 +295,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
       </section>
 
       {/* 5 Pedagogical Studios Showcase (Bento Grid) */}
-      <section id="studios" className="relative z-10 py-24 px-6 max-w-6xl mx-auto">
+      <section id="studios" className="relative z-10 py-28 px-6 max-w-6xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400 font-mono">
             5 Pedagogical Modalities
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Engineered for Comprehensive Mastery
+          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+            Engineered for <span className="font-cursive font-normal text-5xl sm:text-6xl text-blue-600 dark:text-cyan-400">Total Conceptual</span> Clarity
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-            One explanation is rarely enough. CogFlow organizes every technical subject into five coordinated pedagogical studios.
+            One explanation is rarely enough. CogFlow organizes every technical subject into five synchronized pedagogical studios.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Studio 1: Learn */}
-          <div className="p-7 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl hover:border-blue-500/40 transition-all duration-300 group shadow-sm">
-            <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <BookOpen className="w-5 h-5" />
+          <div className="p-8 rounded-3xl glass-panel hover:-translate-y-1 hover:border-blue-500/50 hover:shadow-glowCyan transition-all duration-300 group shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <BookOpen className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">
               Learn Studio
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-              Structured conceptual prose, mental models, and deep explanations. Includes an interactive section navigator and highlighted key principles.
+              Structured conceptual prose, mental models, and deep explanations. Includes an interactive section navigator and highlighted core principles.
             </p>
             <div className="text-[11px] font-mono text-blue-600 dark:text-blue-400 font-semibold">
               Prose • Analogy • Key Takeaways
@@ -301,11 +326,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
           </div>
 
           {/* Studio 2: Visual */}
-          <div className="p-7 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl hover:border-teal-500/40 transition-all duration-300 group shadow-sm">
-            <div className="w-10 h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Eye className="w-5 h-5" />
+          <div className="p-8 rounded-3xl glass-panel hover:-translate-y-1 hover:border-teal-500/50 hover:shadow-glowCyan transition-all duration-300 group shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Eye className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">
               Visual Studio
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
@@ -317,35 +342,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
           </div>
 
           {/* Studio 3: Code */}
-          <div className="p-7 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl hover:border-indigo-500/40 transition-all duration-300 group shadow-sm">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <Code2 className="w-5 h-5" />
+          <div className="p-8 rounded-3xl glass-panel hover:-translate-y-1 hover:border-indigo-500/50 hover:shadow-glowIndigo transition-all duration-300 group shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Code2 className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">
               Code Studio
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
               Production implementations with line-by-line algorithmic invariants, time/space asymptotic complexity analysis, and edge case guards.
             </p>
             <div className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 font-semibold">
-              TypeScript / Go / Python • O(N) Invariants
+              TypeScript / Go / Python • Invariant Guards
             </div>
           </div>
 
           {/* Studio 4: Notes (Spans 2 cols on md) */}
-          <div className="md:col-span-2 p-7 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl hover:border-purple-500/40 transition-all duration-300 group shadow-sm flex flex-col justify-between">
+          <div className="md:col-span-2 p-8 rounded-3xl glass-panel hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-glowPurple transition-all duration-300 group shadow-sm flex flex-col justify-between">
             <div>
-              <div className="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <FileText className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <FileText className="w-6 h-6" />
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Notes Studio (Active Recall & Formula Cheat Sheets)
+              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">
+                Notes Studio <span className="font-cursive text-xl font-normal text-purple-600 dark:text-purple-400">(Active Recall & Cheat Sheets)</span>
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-                3D flip flashcards for spaced repetition, quick-review formulas, mathematical KaTeX theorems, and learner personal annotation scratchpads.
+                3D interactive flipcards for spaced repetition, quick-review formula sheets, KaTeX mathematical theorems, and personal scratchpads.
               </p>
             </div>
-            <div className="pt-4 flex flex-wrap gap-2 text-[11px] font-mono text-purple-600 dark:text-purple-400 font-semibold">
+            <div className="pt-4 flex flex-wrap gap-3 text-xs font-mono text-purple-600 dark:text-purple-400 font-semibold">
               <span>✓ 3D Flip Flashcards</span>
               <span>•</span>
               <span>✓ Spaced Repetition</span>
@@ -355,15 +380,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
           </div>
 
           {/* Studio 5: Practice */}
-          <div className="p-7 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl hover:border-amber-500/40 transition-all duration-300 group shadow-sm">
-            <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-              <CheckCircle2 className="w-5 h-5" />
+          <div className="p-8 rounded-3xl glass-panel hover:-translate-y-1 hover:border-amber-500/50 transition-all duration-300 group shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2">
               Practice Studio
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-              Multi-choice diagnostics paired with open-ended conceptual explanations graded against semantic AI rubrics with instant feedback.
+              Multi-choice diagnostics paired with open-ended conceptual explanations evaluated against semantic AI rubrics with instant feedback.
             </p>
             <div className="text-[11px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
               Semantic AI Rubrics • Conceptual Scoring
@@ -373,27 +398,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
       </section>
 
       {/* The 3-Tier Multi-Dimensional Matrix (B / A / S) */}
-      <section id="matrix" className="relative z-10 py-24 px-6 max-w-5xl mx-auto">
+      <section id="matrix" className="relative z-10 py-28 px-6 max-w-5xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 font-mono">
             Tri-Tier Adaptive Architecture
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Same Topic. Three Pedagogical Depths.
+          <h2 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+            Same Subject. <span className="font-cursive font-normal text-5xl sm:text-6xl text-teal-600 dark:text-teal-400">Three Calibrated</span> Depths.
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-            See how CogFlow dynamically shifts depth when cognitive overload or boredom is detected.
+            See how CogFlow dynamically shifts pedagogical depth when cognitive overload or boredom is sustained.
           </p>
         </div>
 
         {/* Tier Selector Pills */}
-        <div className="flex justify-center mb-8">
-          <div className="p-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md flex gap-2">
+        <div className="flex justify-center mb-9">
+          <div className="p-1.5 rounded-full glass-panel flex gap-2">
             {(['B', 'A', 'S'] as const).map((tier) => (
               <button
                 key={tier}
                 onClick={() => setActiveTierDemo(tier)}
-                className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${
+                className={`px-6 py-2.5 rounded-full text-xs font-bold transition-all ${
                   activeTierDemo === tier
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-md'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -405,15 +430,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
           </div>
         </div>
 
-        {/* Active Tier Preview Card */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-white/70 dark:bg-[#0c1017]/70 border border-slate-200/80 dark:border-white/10 backdrop-blur-2xl shadow-xl shadow-slate-900/5">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5 mb-6">
+        {/* Active Tier Preview Card with Refined Shadow */}
+        <div className="p-8 sm:p-11 rounded-3xl glass-panel shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-6 mb-6">
             <div>
-              <span className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold border ${tierDescriptions[activeTierDemo].accent} mb-2`}>
+              <span className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold border ${tierDescriptions[activeTierDemo].accent} mb-2`}>
                 {tierDescriptions[activeTierDemo].name}
               </span>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                Distributed Consensus (Raft)
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                Distributed Consensus (Raft Protocol)
               </h3>
             </div>
             <div className="text-xs font-mono text-slate-500 dark:text-slate-400">
@@ -421,15 +446,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
             </div>
           </div>
 
-          <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed mb-8">
             {tierDescriptions[activeTierDemo].explanation}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {tierDescriptions[activeTierDemo].features.map((feat, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50/60 dark:bg-slate-900/40 border border-slate-200/50 dark:border-slate-800/60"
+                className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/60 dark:border-slate-800/80"
               >
                 <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-xs font-bold">
                   ✓
@@ -443,7 +468,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
 
       {/* Privacy-by-Design Section */}
       <section id="privacy" className="relative z-10 py-24 px-6 max-w-5xl mx-auto">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 relative overflow-hidden shadow-2xl">
+        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800/90 relative overflow-hidden shadow-2xl">
           {/* Subtle Ambient Light Orb inside */}
           <div className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-teal-500/20 blur-3xl pointer-events-none" />
 
@@ -453,8 +478,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
               <span>Strict Privacy Invariant</span>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Zero Raw Video Frames Ever Leave Your Device.
+            <h3 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+              Zero Raw Video Frames <br />
+              <span className="font-cursive font-normal text-4xl sm:text-5xl text-teal-400">Ever Leave</span> Your Machine.
             </h3>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -477,20 +503,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
       </section>
 
       {/* Master CTA Deck */}
-      <section className="relative z-10 py-24 px-6 max-w-4xl mx-auto text-center space-y-6">
-        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+      <section className="relative z-10 py-28 px-6 max-w-4xl mx-auto text-center space-y-7">
+        <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
           Ready to experience <br />
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-teal-400 bg-clip-text text-transparent">
-            Calm Precision Learning?
-          </span>
+          <span className="font-cursive font-normal text-5xl sm:text-7xl text-blue-600 dark:text-cyan-400">Calm Precision</span>{' '}
+          <span className="text-gradient-iridescent font-black">Learning?</span>
         </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
           Launch the cockpit, select any computer science or distributed systems topic, and experience adaptive depth in action.
         </p>
         <div className="pt-4">
           <button
             onClick={onStartLearning}
-            className="group inline-flex items-center gap-3 pl-8 pr-4 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-base shadow-xl shadow-blue-500/30 transition-all duration-200 active:scale-95"
+            className="group inline-flex items-center gap-4 pl-9 pr-5 py-4 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-base shadow-2xl shadow-blue-500/30 transition-all duration-200 active:scale-95 hover:shadow-glowCyan"
           >
             <span>Launch Studio Cockpit</span>
             <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition-transform duration-200">
@@ -512,10 +537,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
             <span>Cognitive-Aware Adaptive Intelligence</span>
           </div>
           <div className="flex items-center gap-6 font-medium">
-            <a href="#philosophy" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Philosophy</a>
-            <a href="#studios" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Studios</a>
-            <a href="#matrix" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Matrix</a>
-            <button onClick={onStartLearning} className="hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition">
+            <a href="#philosophy" className="hover:text-blue-600 dark:hover:text-cyan-400 transition">Philosophy</a>
+            <a href="#studios" className="hover:text-blue-600 dark:hover:text-cyan-400 transition">Studios</a>
+            <a href="#matrix" className="hover:text-blue-600 dark:hover:text-cyan-400 transition">Matrix</a>
+            <button onClick={onStartLearning} className="hover:text-blue-600 dark:hover:text-cyan-400 font-semibold transition">
               Cockpit ↗
             </button>
           </div>
