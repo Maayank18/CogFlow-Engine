@@ -6,49 +6,49 @@ export default {
     extend: {
       colors: {
         canvas: {
-          light: '#f8fafc', // Warm neutral off-white
-          dark: '#0b0f17',  // Deep graphite/charcoal
+          light: '#ffffff', // Crisp pure white
+          dark: '#000000',  // True pitch black
         },
         surface: {
           light: '#ffffff',
-          dark: '#121824',
+          dark: '#09090b',  // Clean zinc obsidian
           raised: {
-            light: '#f1f5f9',
-            dark: '#1a2233',
+            light: '#f4f4f5',
+            dark: '#141416',
           },
           border: {
-            light: '#e2e8f0',
-            dark: '#26334d',
+            light: '#e4e4e7',
+            dark: '#27272a',
           },
         },
         primary: {
-          DEFAULT: '#3b82f6', // Restrained blue/indigo
-          hover: '#2563eb',
-          subtle: '#eff6ff',
-          subtleDark: '#172554',
+          DEFAULT: '#09090b',
+          hover: '#18181b',
+          subtle: '#f4f4f5',
+          subtleDark: '#27272a',
         },
         flow: {
-          DEFAULT: '#0d9488', // Subtle teal for positive flow
-          subtle: '#f0fdfa',
-          dark: '#115e59',
-          glow: 'rgba(13, 148, 136, 0.15)',
+          DEFAULT: '#10b981', // Minimalist emerald
+          subtle: '#ecfdf5',
+          dark: '#064e3b',
+          glow: 'rgba(16, 185, 129, 0.15)',
         },
         overload: {
-          DEFAULT: '#e11d48', // Controlled rose/red
+          DEFAULT: '#f43f5e', // Minimalist rose
           subtle: '#fff1f2',
-          dark: '#9f1239',
-          glow: 'rgba(225, 29, 72, 0.15)',
+          dark: '#881337',
+          glow: 'rgba(244, 63, 94, 0.15)',
         },
         boredom: {
-          DEFAULT: '#d97706', // Controlled amber
+          DEFAULT: '#f59e0b', // Minimalist amber
           subtle: '#fffbeb',
-          dark: '#92400e',
-          glow: 'rgba(217, 119, 6, 0.15)',
+          dark: '#78350f',
+          glow: 'rgba(245, 158, 11, 0.15)',
         },
         tier: {
-          b: '#059669', // Foundations (Emerald/Green)
-          a: '#2563eb', // Core Standard (Blue)
-          s: '#7c3aed', // Advanced (Violet/Purple)
+          b: '#10b981', // Foundations (Emerald)
+          a: '#71717a', // Core Standard (Monochrome Zinc)
+          s: '#ffffff', // Advanced (High Contrast White)
         },
       },
       fontFamily: {

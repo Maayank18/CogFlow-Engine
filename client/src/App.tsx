@@ -82,37 +82,33 @@ const AppContent: React.FC = () => {
     [...workspaceNav, ...intelligenceNav].find((n) => n.id === currentView)?.label || 'Overview';
 
   return (
-    <div className="flex h-screen bg-[#fafbfc] dark:bg-[#07090e] text-slate-800 dark:text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-white dark:bg-black text-zinc-900 dark:text-zinc-100 overflow-hidden font-sans">
       {/* Onboarding Dialog for First-Time Setup */}
       <OnboardingModal isOpen={showOnboarding} onComplete={() => setShowOnboarding(false)} />
 
-      {/* Main Navigation Sidebar */}
+      {/* Main Navigation Sidebar - Pure Monochrome */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0a0d14]/90 backdrop-blur-2xl flex flex-col transition-transform duration-200 lg:static lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black backdrop-blur-2xl flex flex-col transition-transform duration-200 lg:static lg:translate-x-0 ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand header */}
-        <div className="h-16 px-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
+        <div className="h-16 px-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
           <div
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setCurrentView('dashboard')}
           >
-            <div className="w-8 h-8 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-[1.5px] shadow-sm shadow-blue-500/20 shrink-0 group-hover:scale-105 transition-transform duration-200">
-              <div className="w-full h-full rounded-[14px] bg-slate-900 dark:bg-[#090d16] flex items-center justify-center text-white font-black text-xs tracking-tight">
-                <span className="bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent font-black">
-                  CF
-                </span>
-              </div>
+            <div className="w-8 h-8 rounded-xl bg-zinc-950 dark:bg-white flex items-center justify-center text-white dark:text-zinc-950 font-black text-xs tracking-tight shrink-0 shadow-xs group-hover:scale-105 transition-transform duration-200">
+              CF
             </div>
             <div>
-              <span className="font-display font-extrabold text-[15px] tracking-[-0.03em] text-slate-900 dark:text-white block leading-tight">
+              <span className="font-display font-black text-[15px] tracking-[-0.03em] text-zinc-950 dark:text-white block leading-tight">
                 CogFlow
               </span>
               <div className="flex items-center gap-1.5 mt-0.5 leading-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
-                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold text-teal-600 dark:text-teal-400">
-                  Calm Precision
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[9px] uppercase tracking-[0.2em] font-mono font-bold text-zinc-500 dark:text-zinc-400">
+                  Adaptive Intelligence
                 </span>
               </div>
             </div>
@@ -120,7 +116,7 @@ const AppContent: React.FC = () => {
 
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="lg:hidden p-1 rounded-md text-slate-400 hover:text-slate-600"
+            className="lg:hidden p-1 rounded-md text-zinc-400 hover:text-zinc-600"
           >
             <X className="w-5 h-5" />
           </button>
@@ -130,7 +126,7 @@ const AppContent: React.FC = () => {
         <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
           {/* Workspace Group */}
           <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono px-3 block mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono px-3 block mb-2">
               Workspace
             </span>
             {workspaceNav.map((item) => {
@@ -144,11 +140,11 @@ const AppContent: React.FC = () => {
                   }}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5'
+                      ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900'
                   }`}
                 >
-                  <span className={isActive ? 'text-white' : 'text-slate-400 dark:text-slate-500'}>
+                  <span className={isActive ? 'text-white dark:text-zinc-950' : 'text-zinc-400 dark:text-zinc-500'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -159,7 +155,7 @@ const AppContent: React.FC = () => {
 
           {/* Intelligence Group */}
           <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono px-3 block mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono px-3 block mb-2">
               Intelligence
             </span>
             {intelligenceNav.map((item) => {
@@ -173,11 +169,11 @@ const AppContent: React.FC = () => {
                   }}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5'
+                      ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900'
                   }`}
                 >
-                  <span className={isActive ? 'text-white' : 'text-slate-400 dark:text-slate-500'}>
+                  <span className={isActive ? 'text-white dark:text-zinc-950' : 'text-zinc-400 dark:text-zinc-500'}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
@@ -188,32 +184,32 @@ const AppContent: React.FC = () => {
 
           {/* Public Platform Preview Link */}
           <div className="pt-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono px-3 block mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono px-3 block mb-2">
               Public Platform
             </span>
             <button
               onClick={() => setShowLandingPreview(true)}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5 transition"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
             >
-              <Globe className="w-4 h-4 text-blue-500" />
+              <Globe className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
               <span>Landing Experience</span>
             </button>
           </div>
         </nav>
 
         {/* User Footer Profile */}
-        <div className="p-4 border-t border-slate-100 dark:border-white/5">
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-50/80 dark:bg-white/5">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+        <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center gap-3 p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
+            <div className="w-9 h-9 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-black flex items-center justify-center shrink-0 shadow-xs">
               DL
             </div>
             <div className="truncate">
-              <span className="text-xs font-bold text-slate-900 dark:text-white block truncate leading-tight font-display">
+              <span className="text-xs font-bold text-zinc-950 dark:text-white block truncate leading-tight font-display">
                 Dev Learner
               </span>
-              <span className="text-[10px] text-teal-600 dark:text-teal-400 font-medium flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                Cognitive Flow: Active
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono flex items-center gap-1 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Adaptive Invariant: Active
               </span>
             </div>
           </div>
@@ -223,20 +219,20 @@ const AppContent: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top App Header */}
-        <header className="h-16 px-6 border-b border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#07090e]/70 backdrop-blur-2xl flex items-center justify-between shrink-0">
+        <header className="h-16 px-6 border-b border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-black/95 backdrop-blur-2xl flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="lg:hidden p-2 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb Hierarchy */}
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-400 dark:text-slate-500 font-medium">CogFlow</span>
-              <span className="text-slate-300 dark:text-slate-600">/</span>
-              <h2 className="text-sm font-black text-slate-900 dark:text-white font-display">
+            <div className="flex items-center gap-2 text-xs font-mono">
+              <span className="text-zinc-400 dark:text-zinc-500 font-medium">CogFlow</span>
+              <span className="text-zinc-300 dark:text-zinc-700">/</span>
+              <h2 className="text-sm font-black text-zinc-950 dark:text-white font-display">
                 {currentViewLabel}
               </h2>
             </div>
@@ -244,10 +240,10 @@ const AppContent: React.FC = () => {
 
           <div className="flex items-center gap-3">
             {/* Live Invariant Telemetry Pill */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-[11px] font-mono font-bold text-zinc-700 dark:text-zinc-300">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span>30s Invariant Active</span>
             </div>
@@ -255,20 +251,20 @@ const AppContent: React.FC = () => {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+              className="p-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors"
               title="Toggle Light/Dark Theme"
             >
               {resolvedTheme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400" />
+                <Sun className="w-4 h-4 text-zinc-100" />
               ) : (
-                <Moon className="w-4 h-4 text-slate-700" />
+                <Moon className="w-4 h-4 text-zinc-800" />
               )}
             </button>
 
-            {/* Launch Studio Button */}
+            {/* Launch Studio Button - Pure High Contrast */}
             <button
               onClick={() => handleLaunchTopic('distributed-consensus-raft', 'A')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-500/25 transition-all duration-150 active:scale-95"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white dark:bg-white dark:hover:bg-zinc-100 dark:text-zinc-950 text-xs font-bold shadow-xs transition-all duration-150 active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Launch Studio</span>
@@ -277,7 +273,7 @@ const AppContent: React.FC = () => {
         </header>
 
         {/* Viewport Content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-zinc-50/40 dark:bg-black">
           {currentView === 'dashboard' && (
             <DashboardPage
               onLaunchTopic={handleLaunchTopic}

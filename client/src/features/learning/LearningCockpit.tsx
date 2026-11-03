@@ -232,41 +232,55 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  const hasRealVisualization = Boolean(
+    lesson?.visualDiagram &&
+    Array.isArray(lesson.visualDiagram.stages) &&
+    lesson.visualDiagram.stages.length >= 2
+  );
+
+  useEffect(() => {
+    if (currentMode === 'visualize' && !hasRealVisualization && !isLoadingLesson) {
+      setCurrentMode('learn');
+    }
+  }, [currentMode, hasRealVisualization, isLoadingLesson]);
+
   const modes: Array<{ id: PedagogicalMode; label: string; icon: React.ReactNode }> = [
     { id: 'learn', label: 'Learn', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'visualize', label: 'Visualize', icon: <Eye className="w-4 h-4" /> },
-    { id: 'code', label: 'Code', icon: <Code2 className="w-4 h-4" /> },
+    ...(hasRealVisualization
+      ? [{ id: 'visualize' as PedagogicalMode, label: 'Visualize', icon: <Eye className="w-4 h-4" /> }]
+      : []),
+    { id: 'code', label: 'Code Lab', icon: <Code2 className="w-4 h-4" /> },
     { id: 'notes', label: 'Notes', icon: <FileText className="w-4 h-4" /> },
     { id: 'practice', label: 'Practice', icon: <CheckSquare className="w-4 h-4" /> },
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-canvas-light dark:bg-canvas-dark text-slate-800 dark:text-slate-100 overflow-hidden">
-      {/* Cockpit Top Header */}
-      <header className="h-14 px-4 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#121824]/80 backdrop-blur-md flex items-center justify-between shrink-0 z-20">
+    <div className="flex flex-col h-screen bg-white dark:bg-black text-zinc-900 dark:text-zinc-100 overflow-hidden font-sans">
+      {/* Cockpit Top Header - Pure Monochrome */}
+      <header className="h-14 px-4 border-b border-zinc-200/90 dark:border-zinc-800/90 bg-white/95 dark:bg-black/95 backdrop-blur-xl flex items-center justify-between shrink-0 z-20">
         <div className="flex items-center gap-3">
           <Button size="sm" variant="ghost" onClick={onExit} icon={<ChevronLeft className="w-4 h-4" />}>
             Dashboard
           </Button>
-          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
+          <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
           <div>
-            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate max-w-xs sm:max-w-md">
+            <h2 className="text-sm font-black text-zinc-950 dark:text-white truncate max-w-xs sm:max-w-md font-display">
               {lesson?.topicTitle || 'Loading Topic...'}
             </h2>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 block -mt-0.5">
+            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block -mt-0.5 font-medium">
               {lesson?.subjectTitle || 'Course Overview'}
             </span>
           </div>
         </div>
 
-        {/* Multi-Tier B / A / S Switcher */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+        {/* Multi-Tier B / A / S Switcher - High Contrast Monochrome */}
+        <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
           <button
             onClick={() => handleManualTierChange('B')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
               currentTier === 'B'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
             }`}
           >
             Tier B · Foundations
@@ -275,8 +289,8 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
             onClick={() => handleManualTierChange('A')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
               currentTier === 'A'
-                ? 'bg-blue-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
             }`}
           >
             Tier A · Core
@@ -285,8 +299,8 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
             onClick={() => handleManualTierChange('S')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
               currentTier === 'S'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
             }`}
           >
             Tier S · Advanced
@@ -295,7 +309,7 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
 
         {/* Right Header Status */}
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 font-mono">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-zinc-500 font-mono">
             <Clock className="w-3.5 h-3.5" />
             <span>{formatSeconds(sessionSeconds)}</span>
           </div>
@@ -321,18 +335,18 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
         <aside
           className={`${
             isLeftCollapsed ? 'w-14' : 'w-64'
-          } border-r border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#121824] transition-all duration-200 flex flex-col shrink-0 z-10`}
+          } border-r border-zinc-200/90 dark:border-zinc-800/90 bg-white dark:bg-black transition-all duration-200 flex flex-col shrink-0 z-10`}
         >
           {/* Mode Selector Tabs */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 space-y-1">
+          <div className="p-3 border-b border-zinc-100 dark:border-zinc-800/80 space-y-1">
             {modes.map((m) => (
               <button
                 key={m.id}
                 onClick={() => setCurrentMode(m.id)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                   currentMode === m.id
-                    ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-semibold'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                    ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900'
                 } ${isLeftCollapsed ? 'justify-center px-0' : ''}`}
                 title={m.label}
               >
@@ -345,15 +359,15 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
           {/* Table of Sections (when not collapsed) */}
           {!isLeftCollapsed && lesson?.sections && (
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block mb-2 font-mono">
                 Topic Sections
               </span>
               {lesson.sections.map((sec, idx) => (
                 <div
                   key={sec.id || idx}
-                  className="text-xs text-slate-600 dark:text-slate-400 py-1.5 px-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800/40 cursor-pointer truncate"
+                  className="text-xs text-zinc-600 dark:text-zinc-400 py-1.5 px-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-900 cursor-pointer truncate transition-colors"
                 >
-                  <span className="text-slate-400 mr-2 font-mono">{idx + 1}.</span>
+                  <span className="text-zinc-400 mr-2 font-mono">{idx + 1}.</span>
                   {sec.title}
                 </div>
               ))}
@@ -361,10 +375,10 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
           )}
 
           {/* Collapse Toggle Footer */}
-          <div className="p-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+          <div className="p-3 border-t border-zinc-100 dark:border-zinc-800/80 flex justify-end">
             <button
               onClick={() => setIsLeftCollapsed(!isLeftCollapsed)}
-              className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="p-1 rounded text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
             >
               {isLeftCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             </button>
@@ -372,11 +386,11 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
         </aside>
 
         {/* CENTRAL LEARNING CANVAS */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 relative">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 relative bg-zinc-50/40 dark:bg-black">
           {isLoadingLesson ? (
             <div className="flex flex-col items-center justify-center h-full space-y-4">
-              <div className="w-8 h-8 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-              <p className="text-xs text-slate-500 font-medium">
+              <div className="w-8 h-8 rounded-full border-2 border-zinc-900 dark:border-white border-t-transparent animate-spin" />
+              <p className="text-xs text-zinc-500 font-mono">
                 Calibrating pedagogical material for Tier {currentTier}...
               </p>
             </div>
@@ -386,7 +400,9 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
               {currentMode === 'learn' && (
                 <LearnStudio sections={lesson.sections} topicTitle={lesson.topicTitle} />
               )}
-              {currentMode === 'visualize' && <VisualStudio diagram={lesson.visualDiagram} />}
+              {currentMode === 'visualize' && hasRealVisualization && (
+                <VisualStudio diagram={lesson.visualDiagram} />
+              )}
               {currentMode === 'code' && <CodeStudio codeExample={lesson.codeExample} />}
               {currentMode === 'notes' && (
                 <NotesStudio topicId={topicId} notes={lesson.revisionNotes} />
@@ -400,7 +416,7 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
               )}
             </div>
           ) : (
-            <div className="text-center py-16 text-slate-500">
+            <div className="text-center py-16 text-zinc-500 font-mono text-xs">
               <p>Unable to load lesson for this topic.</p>
             </div>
           )}
@@ -410,21 +426,21 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
         <aside
           className={`${
             isRightCollapsed ? 'w-12' : 'w-72'
-          } border-l border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#121824] transition-all duration-200 flex flex-col shrink-0 z-10`}
+          } border-l border-zinc-200/90 dark:border-zinc-800/90 bg-white dark:bg-black transition-all duration-200 flex flex-col shrink-0 z-10`}
         >
           {/* Header */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="p-3 border-b border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
             {!isRightCollapsed && (
               <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-blue-500" />
-                <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                <Activity className="w-4 h-4 text-zinc-900 dark:text-white" />
+                <span className="text-xs font-bold text-zinc-900 dark:text-white font-display">
                   Cognitive Intelligence
                 </span>
               </div>
             )}
             <button
               onClick={() => setIsRightCollapsed(!isRightCollapsed)}
-              className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="p-1 rounded text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition"
             >
               {isRightCollapsed ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </button>
@@ -434,16 +450,16 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
             <div className="flex-1 overflow-y-auto p-4 space-y-5 text-xs">
               {/* 30-Second Sustained Recalibration Proposal Banner */}
               {activeRecommendation && (
-                <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-200 animate-in fade-in slide-in-from-top-2 duration-200 space-y-2.5">
+                <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-amber-950 dark:text-amber-200 animate-in fade-in slide-in-from-top-2 duration-200 space-y-2.5">
                   <div className="flex items-center gap-1.5 font-bold text-xs">
                     <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
                     <span>Adaptive Recalibration</span>
                   </div>
-                  <p className="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">
+                  <p className="text-[11px] leading-relaxed text-zinc-700 dark:text-zinc-300">
                     {activeRecommendation.reason}
                   </p>
                   <div className="flex items-center gap-2 pt-1">
-                    <Button size="sm" onClick={handleAcceptAdaptation} className="w-full">
+                    <Button size="sm" onClick={handleAcceptAdaptation} className="w-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold">
                       Accept (Tier {activeRecommendation.suggestedTier})
                     </Button>
                     <Button size="sm" variant="ghost" onClick={handleDismissAdaptation}>

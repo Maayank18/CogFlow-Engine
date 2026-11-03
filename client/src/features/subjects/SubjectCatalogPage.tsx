@@ -52,19 +52,25 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
           if (!selectedSubjectId || !data.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
             setSelectedSubjectId(data[0].slug || data[0].id);
           }
+          return;
         }
       } catch (err) {
         console.warn('Using client-side curriculum catalog fallback:', err);
-        // Filter fallback data client-side
-        let filtered = FALLBACK_CURRICULUM_CATALOG;
-        if (selectedCategory !== 'All') {
-          filtered = filtered.filter((s) => s.category.toLowerCase() === selectedCategory.toLowerCase());
-        }
-        if (searchQuery) {
-          const q = searchQuery.toLowerCase();
-          filtered = filtered.filter((s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
-        }
-        setSubjects(filtered);
+      }
+
+      // Filter fallback data client-side
+      let filtered = FALLBACK_CURRICULUM_CATALOG;
+      if (selectedCategory !== 'All') {
+        filtered = filtered.filter((s) => s.category.toLowerCase() === selectedCategory.toLowerCase());
+      }
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filtered = filtered.filter((s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+      }
+      const finalSubjects = filtered.length > 0 ? filtered : FALLBACK_CURRICULUM_CATALOG;
+      setSubjects(finalSubjects);
+      if (!selectedSubjectId || !finalSubjects.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
+        setSelectedSubjectId(finalSubjects[0].slug || finalSubjects[0].id);
       }
     };
 
@@ -108,16 +114,16 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
     <div className="space-y-8 max-w-6xl mx-auto pb-16 font-sans">
       {/* Catalog Header */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white font-display">
+        <h1 className="text-3xl font-black tracking-tight text-zinc-950 dark:text-white font-display">
           Curriculum & Subject Catalog
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl leading-relaxed">
           Explore structured engineering and scientific disciplines calibrated for dynamic multi-tier pedagogical depth (Foundations, Core, and Advanced).
         </p>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-[#0c1017] border border-slate-200/80 dark:border-white/10 shadow-sm">
+      {/* Filter and Search Bar - Pure Monochrome */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 shadow-xs">
         {/* Category Pills */}
         <div className="flex flex-wrap gap-2">
           {categories.map((cat) => (
@@ -126,8 +132,8 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
               onClick={() => setSelectedCategory(cat)}
               className={`text-xs px-3.5 py-1.5 rounded-full font-bold transition-all ${
                 selectedCategory === cat
-                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/25'
-                  : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10'
+                  ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs'
+                  : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800'
               }`}
             >
               {cat}
@@ -139,10 +145,10 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         <div className="w-full sm:w-72">
           <Input
             placeholder="Search topics or concepts..."
-            leftIcon={<Search className="w-4 h-4 text-slate-400" />}
+            leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="rounded-full text-xs"
+            className="rounded-full text-xs bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-950 dark:text-white"
           />
         </div>
       </div>
@@ -152,7 +158,7 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         {/* Left Column: Subject List */}
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between px-1 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono">
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
               Disciplines ({subjects.length})
             </span>
           </div>
@@ -167,17 +173,17 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
                   onClick={() => setSelectedSubjectId(sub.slug || sub.id)}
                   className={`p-4 rounded-2xl cursor-pointer transition-all duration-200 border ${
                     isSelected
-                      ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-500/60 shadow-md shadow-blue-500/10'
-                      : 'bg-white dark:bg-[#0c1017] border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:bg-slate-50/60 dark:hover:bg-white/5'
+                      ? 'bg-zinc-100 dark:bg-zinc-900 border-zinc-950 dark:border-white shadow-xs'
+                      : 'bg-white dark:bg-[#09090b] border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-900/60'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3.5">
                       <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm ${
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm border ${
                           isSelected
-                            ? 'bg-blue-600 text-white shadow-sm'
-                            : 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300'
+                            ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-transparent shadow-xs'
+                            : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-800'
                         }`}
                       >
                         {sub.category === 'Computer Science' && <Cpu className="w-4 h-4" />}
@@ -189,17 +195,17 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
                         )}
                       </div>
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                        <h3 className="text-sm font-bold text-zinc-950 dark:text-white leading-tight">
                           {sub.title}
                         </h3>
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                        <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
                           {sub.category}
                         </span>
                       </div>
                     </div>
                     <ChevronRight
                       className={`w-4 h-4 transition-transform duration-200 ${
-                        isSelected ? 'text-blue-600 dark:text-blue-400 translate-x-1' : 'text-slate-300 dark:text-slate-600'
+                        isSelected ? 'text-zinc-950 dark:text-white translate-x-1' : 'text-zinc-300 dark:text-zinc-600'
                       }`}
                     />
                   </div>
@@ -212,14 +218,14 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         {/* Right Column: Topics in Selected Subject */}
         <div className="lg:col-span-8 space-y-4">
           {selectedSubject && (
-            <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-teal-500/10 border border-blue-200/60 dark:border-blue-900/40 backdrop-blur-md">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono block mb-1">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 shadow-xs">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 block mb-1">
                 Active Discipline
               </span>
-              <h2 className="text-xl font-black text-slate-900 dark:text-white">
+              <h2 className="text-xl font-black text-zinc-950 dark:text-white font-display">
                 {selectedSubject.title}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
                 {selectedSubject.description}
               </p>
             </div>
@@ -227,7 +233,7 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
 
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between px-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 font-mono">
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-mono">
                 Curriculum Topics ({topics.length})
               </span>
             </div>
@@ -235,45 +241,36 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
             {topics.map((top) => (
               <div
                 key={top.id || top.slug}
-                className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0c1017] border border-slate-200/80 dark:border-white/10 shadow-sm hover:border-blue-500/40 hover:shadow-md transition-all duration-200 space-y-4 group"
+                className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 shadow-xs hover:border-zinc-950 dark:hover:border-white hover:shadow-sm transition-all duration-200 space-y-4 group"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-base font-bold text-zinc-950 dark:text-white group-hover:text-zinc-700 dark:group-hover:text-zinc-200 transition-colors">
                       {top.title}
                     </h3>
-                    <Badge
-                      size="sm"
-                      variant={
-                        top.difficultyBaseline === 'S'
-                          ? 'tierS'
-                          : top.difficultyBaseline === 'B'
-                          ? 'tierB'
-                          : 'tierA'
-                      }
-                    >
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800">
                       Tier {top.difficultyBaseline} Baseline
-                    </Badge>
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                    <Clock className="w-3.5 h-3.5 text-zinc-400" />
                     <span>~{top.estimatedMinutes} mins</span>
                   </div>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   {top.summary}
                 </p>
 
                 {top.learningObjectives && top.learningObjectives.length > 0 && (
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono block mb-2">
+                  <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider font-mono block mb-2">
                       Core Invariants Covered:
                     </span>
                     <ul className="space-y-1.5">
                       {top.learningObjectives.slice(0, 3).map((obj, i) => (
-                        <li key={i} className="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-teal-500 shrink-0 mt-0.5" />
+                        <li key={i} className="text-xs text-zinc-700 dark:text-zinc-300 flex items-start gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                           <span>{obj}</span>
                         </li>
                       ))}
@@ -284,7 +281,7 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
                 <div className="pt-2 flex items-center justify-end">
                   <button
                     onClick={() => onSelectTopic(top.slug || top.id, top.difficultyBaseline)}
-                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 hover:bg-blue-600 dark:bg-white dark:hover:bg-blue-500 text-white dark:text-slate-900 dark:hover:text-white text-xs font-bold transition-all duration-200 active:scale-95 shadow-sm"
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-zinc-950 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 text-xs font-bold transition-all duration-200 active:scale-95 shadow-xs"
                   >
                     <span>Launch Studio</span>
                     <ArrowRight className="w-3.5 h-3.5" />

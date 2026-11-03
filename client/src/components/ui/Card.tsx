@@ -15,11 +15,11 @@ export const Card: React.FC<CardProps> = ({
 
   const variants = {
     default:
-      'bg-white dark:bg-[#121824] border-slate-200/80 dark:border-slate-800 shadow-subtle',
+      'bg-white dark:bg-[#0c0c0e] border-zinc-200/80 dark:border-zinc-800/80 shadow-xs',
     raised:
-      'bg-slate-50/60 dark:bg-[#161f30] border-slate-200 dark:border-slate-700/80 shadow-card',
+      'bg-zinc-50/70 dark:bg-[#121215] border-zinc-200 dark:border-zinc-800 shadow-sm',
     interactive:
-      'bg-white dark:bg-[#121824] border-slate-200/80 dark:border-slate-800 shadow-subtle hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-card cursor-pointer',
+      'bg-white dark:bg-[#0c0c0e] border-zinc-200/80 dark:border-zinc-800/80 shadow-xs hover:border-zinc-900 dark:hover:border-zinc-100 transition-all cursor-pointer',
   };
 
   return (

@@ -152,24 +152,64 @@ Respond with a single JSON object with the following exact structure:
     {
       "id": "q-1",
       "type": "mcq",
-      "prompt": "Conceptual multiple-choice question calibrated to Tier ${tier}",
+      "prompt": "Deep conceptual multiple-choice question testing the core invariant of ${topicTitle} calibrated to Tier ${tier}",
       "tier": "${tier}",
       "options": ["Option A", "Option B", "Option C", "Option D"],
       "correctAnswerIndex": 1,
-      "explanation": "Detailed explanation why Option B is correct and others are traps",
+      "explanation": "Detailed pedagogical explanation why Option B is correct and why other options fail or represent common traps",
       "maxScore": 10
     },
     {
       "id": "q-2",
-      "type": "concept",
-      "prompt": "Explain in your own words how ${topicTitle} guarantees correctness or maintains performance under stress.",
+      "type": "mcq",
+      "prompt": "Edge-case or failure mode question testing what happens when boundaries are exceeded in ${topicTitle}",
       "tier": "${tier}",
-      "explanation": "A complete answer must mention invariants, complexity, and failure modes.",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 0,
+      "explanation": "Detailed technical explanation of the failure mode and recovery behavior",
+      "maxScore": 10
+    },
+    {
+      "id": "q-3",
+      "type": "mcq",
+      "prompt": "Architectural trade-off question comparing performance, memory, and concurrency guarantees in ${topicTitle}",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 2,
+      "explanation": "Explanation of trade-offs between speed, space, and safety invariants",
+      "maxScore": 10
+    },
+    {
+      "id": "q-4",
+      "type": "mcq",
+      "prompt": "Implementation mechanics or asymptotic complexity question under stress in ${topicTitle}",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 3,
+      "explanation": "Explanation of computational runtime complexity and memory bounds",
+      "maxScore": 10
+    },
+    {
+      "id": "q-5",
+      "type": "mcq",
+      "prompt": "Diagnostic scenario: Given a specific error log or latency spike in ${topicTitle}, what is the root cause?",
+      "tier": "${tier}",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswerIndex": 1,
+      "explanation": "Root cause analysis of the production diagnostic symptom",
+      "maxScore": 10
+    },
+    {
+      "id": "q-6",
+      "type": "concept",
+      "prompt": "In your own words, synthesize how ${topicTitle} guarantees correctness or maintains performance invariants under adversarial network or load conditions.",
+      "tier": "${tier}",
+      "explanation": "A complete answer must formulate the core invariants, analyze boundary failure modes, and articulate the engineering trade-offs.",
       "maxScore": 20,
       "rubricCriteria": [
-        "Identifies the foundational mechanism",
+        "Formulates the core mechanism or mathematical invariant",
         "Explains boundary or failure mode handling",
-        "Demonstrates causal reasoning rather than mere buzzwords"
+        "Demonstrates causal reasoning rather than memorized buzzwords"
       ]
     }
   ]
