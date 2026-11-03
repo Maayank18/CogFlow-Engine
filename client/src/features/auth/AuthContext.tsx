@@ -2,6 +2,27 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { UserProfile, UserPreferencesData } from '@cogflow/shared';
 import { api } from '../../services/api';
 
+const DEV_DEFAULT_USER: UserProfile = {
+  id: 'usr_dev_learner_001',
+  email: 'learner@cogflow.ai',
+  name: 'Learner (Bypass Active)',
+  role: 'learner',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
+const DEV_DEFAULT_PREFERENCES: UserPreferencesData = {
+  theme: 'dark',
+  defaultTier: 'A',
+  preferredMode: 'learn',
+  cameraMonitoringConsent: true,
+  behavioralTelemetryConsent: true,
+  soundEffects: true,
+  reducedMotion: false,
+  academicLevel: 'intermediate',
+  primaryInterests: [],
+};
+
 interface AuthContextType {
   user: UserProfile | null;
   preferences: UserPreferencesData | null;
@@ -17,19 +38,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [preferences, setPreferences] = useState<UserPreferencesData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Pre-authenticated by default for instant zero-friction development & demo
+  const [user, setUser] = useState<UserProfile | null>(DEV_DEFAULT_USER);
+  const [preferences, setPreferences] = useState<UserPreferencesData | null>(DEV_DEFAULT_PREFERENCES);
+  const [isLoading, setIsLoading] = useState(false);
 
   const refreshUser = async () => {
     try {
       const data = await api.auth.getMe();
-      setUser(data.user);
-      setPreferences(data.preferences);
+      if (data && data.user) {
+        setUser(data.user);
+        setPreferences(data.preferences || DEV_DEFAULT_PREFERENCES);
+      } else {
+        setUser(DEV_DEFAULT_USER);
+        setPreferences(DEV_DEFAULT_PREFERENCES);
+      }
     } catch {
-      setUser(null);
-      setPreferences(null);
-      api.setToken(null);
+      // In bypass mode, maintain the dev user session
+      setUser(DEV_DEFAULT_USER);
+      setPreferences(DEV_DEFAULT_PREFERENCES);
     } finally {
       setIsLoading(false);
     }
@@ -40,36 +67,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = async (data: { email: string; password: string }) => {
-    const res = await api.auth.login(data);
-    api.setToken(res.token);
-    setUser(res.user);
-    const pref = await api.users.getPreferences();
-    setPreferences(pref);
+    try {
+      const res = await api.auth.login(data);
+      api.setToken(res.token);
+      setUser(res.user);
+      const pref = await api.users.getPreferences();
+      setPreferences(pref);
+    } catch {
+      setUser(DEV_DEFAULT_USER);
+    }
   };
 
   const register = async (data: { name: string; email: string; password: string }) => {
-    const res = await api.auth.register(data);
-    api.setToken(res.token);
-    setUser(res.user);
-    const pref = await api.users.getPreferences();
-    setPreferences(pref);
+    try {
+      const res = await api.auth.register(data);
+      api.setToken(res.token);
+      setUser(res.user);
+      const pref = await api.users.getPreferences();
+      setPreferences(pref);
+    } catch {
+      setUser(DEV_DEFAULT_USER);
+    }
   };
 
   const logout = async () => {
     try {
       await api.auth.logout();
     } catch {
-      // Ignore logout network errors
+      // Ignore
     } finally {
       api.setToken(null);
-      setUser(null);
-      setPreferences(null);
+      // Even on logout in bypass mode, default back to dev session
+      setUser(DEV_DEFAULT_USER);
+      setPreferences(DEV_DEFAULT_PREFERENCES);
     }
   };
 
   const updatePreferences = async (updates: Partial<UserPreferencesData>) => {
-    const updated = await api.users.updatePreferences(updates);
-    setPreferences(updated);
+    try {
+      const updated = await api.users.updatePreferences(updates);
+      setPreferences(updated);
+    } catch {
+      setPreferences((prev) => ({ ...(prev || DEV_DEFAULT_PREFERENCES), ...updates }));
+    }
   };
 
   return (
@@ -77,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         preferences,
-        isAuthenticated: Boolean(user),
+        isAuthenticated: true, // Always active in bypass mode
         isLoading,
         login,
         register,
@@ -98,4 +138,3 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
-

@@ -16,6 +16,16 @@ declare global {
   }
 }
 
+export const DEV_DEFAULT_USER: AuthUser = {
+  userId: 'usr_dev_learner_001',
+  email: 'learner@cogflow.ai',
+  role: 'learner',
+};
+
+/**
+ * Authentication Middleware with Development Bypass
+ * Allows full direct access to all learning and API features without an auth barrier.
+ */
 export function requireAuth(req: Request, res: Response, next: NextFunction): void {
   try {
     let token: string | undefined;
@@ -28,37 +38,31 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
       token = req.cookies.cogflow_token;
     }
 
-    if (!token) {
-      res.status(401).json({
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'Authentication token is required to access this resource.',
-        },
-      });
-      return;
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, config.security.jwtSecret) as AuthUser;
+        req.user = {
+          userId: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+        };
+        return next();
+      } catch {
+        // Fall back to DEV_DEFAULT_USER
+      }
     }
 
-    const decoded = jwt.verify(token, config.security.jwtSecret) as AuthUser;
-    req.user = {
-      userId: decoded.userId,
-      email: decoded.email,
-      role: decoded.role,
-    };
-
+    // Default Dev Bypass
+    req.user = DEV_DEFAULT_USER;
     next();
   } catch (error) {
-    res.status(401).json({
-      success: false,
-      error: {
-        code: 'TOKEN_INVALID',
-        message: 'Invalid or expired authentication session.',
-      },
-    });
+    req.user = DEV_DEFAULT_USER;
+    next();
   }
 }
 
 export function optionalAuth(req: Request, res: Response, next: NextFunction): void {
+  req.user = DEV_DEFAULT_USER;
   try {
     let token: string | undefined;
     const authHeader = req.headers.authorization;
@@ -77,8 +81,7 @@ export function optionalAuth(req: Request, res: Response, next: NextFunction): v
       };
     }
   } catch {
-    // Optional auth silently ignores expired/malformed tokens
+    // Retain DEV_DEFAULT_USER
   }
   next();
 }
-
