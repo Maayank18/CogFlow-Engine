@@ -69,18 +69,9 @@ Notice how each phase guarantees that no single part gets overwhelmed!`,
         title: `Intuitive Flow: ${topicTitle}`,
         caption: 'High-level conceptual diagram illustrating the gentle flow from input to organized state.',
         mermaidCode: `graph LR
-  subgraph Input
-    A[Incoming Item]
-  end
-  subgraph Processing [${topicTitle} Core]
-    B[Route & Inspect] --> C[Apply Guardrails]
-  end
-  subgraph Output
-    C --> D[Balanced Result]
-  end
-  style B fill:#eff6ff,stroke:#3b82f6
-  style C fill:#f0fdfa,stroke:#0d9488
-  style D fill:#f8fafc,stroke:#64748b`,
+  Input["Incoming Item"] --> Route["Route & Inspect"]
+  Route --> Guard["Apply Invariant Rules"]
+  Guard --> Result["Committed State"]`,
         stages: [
           { step: 1, label: 'Incoming Item', description: 'Item arrives at the ingestion boundary.' },
           { step: 2, label: 'Route & Inspect', description: 'Quickly examines destination rules without scanning all items.' },
@@ -638,18 +629,14 @@ Unlike naive approaches that scale linearly (O(n)), ${topicTitle} optimizes crit
       title: `System Architecture: ${topicTitle}`,
       caption: 'Component interaction and data flow diagram for production systems.',
       mermaidCode: `graph TD
-  Client[Client / Service Request] --> Gateway[API Gateway & Rate Limiter]
-  Gateway --> Ingestion[Ingestion Validator]
-  subgraph Engine [${topicTitle} Core]
-    Ingestion --> Router{Routing Logic}
-    Router -->|Read Query| Cache[(Fast Path Index)]
-    Router -->|Write Mutation| InvariantCheck[Invariant Validator]
-    InvariantCheck --> StateStore[(Persistent State)]
-  end
-  Cache --> Response[Response Transformer]
+  Client["Client Request"] --> Gateway["API Gateway & Validator"]
+  Gateway --> Router{"Router / Engine"}
+  Router -->|"Read Path"| Cache["Fast Index Cache"]
+  Router -->|"Write Path"| InvariantCheck["Invariant Validation"]
+  InvariantCheck --> StateStore["State Machine Storage"]
+  Cache --> Response["Response Formatter"]
   StateStore --> Response
-  Response --> Client
-  style Engine fill:#f8fafc,stroke:#3b82f6,stroke-dasharray: 5 5`,
+  Response --> Client`,
       stages: [
         { step: 1, label: 'Client Ingestion', description: 'Request parsed and validated against boundary schema.' },
         { step: 2, label: 'Core Invariant Validation', description: 'Checks state consistency before mutation.' },

@@ -42,19 +42,19 @@ const AppContent: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Global suppression & purge of rogue error elements injected into document.body
+  // Global suppression & purge of rogue error elements injected anywhere in the DOM
   useEffect(() => {
     const purgeRogueElements = () => {
       if (typeof document === 'undefined') return;
-      document.querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon').forEach((el) => {
-        if (el.parentElement === document.body) {
+      document
+        .querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon, [id^="dmermaid"], div.error-icon, svg.error-icon')
+        .forEach((el) => {
           el.remove();
-        }
-      });
+        });
     };
     purgeRogueElements();
     const observer = new MutationObserver(() => purgeRogueElements());
-    observer.observe(document.body, { childList: true });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, []);
 

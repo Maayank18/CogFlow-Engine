@@ -79,15 +79,15 @@ function parseMermaidFallback(code: string) {
   return { nodes, edges };
 }
 
-// Remove any rogue error divs that Mermaid 10 injects into document.body
+// Purge any rogue error elements injected by 3rd party scripts anywhere in the document
 function purgeRogueMermaidDOMElements() {
   if (typeof document === 'undefined') return;
   try {
-    const rogues = document.querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon');
+    const rogues = document.querySelectorAll(
+      'div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon, [id^="dmermaid"], svg.error-icon'
+    );
     rogues.forEach((el) => {
-      if (el.parentElement === document.body) {
-        el.remove();
-      }
+      el.remove();
     });
   } catch {
     // Ignore DOM removal errors
@@ -152,7 +152,10 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
               const isValid = await win.mermaid.parse(diagram.mermaidCode).catch(() => false);
               if (!isValid) {
                 purgeRogueMermaidDOMElements();
-                if (!isCancelled) setRenderMode('flow');
+                if (!isCancelled) {
+                  setMermaidSvg(null);
+                  setRenderMode('flow');
+                }
                 return;
               }
             }
@@ -162,6 +165,20 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
             purgeRogueMermaidDOMElements();
 
             if (!isCancelled && result && result.svg) {
+              // Critical protection: reject any SVG containing Mermaid error markers
+              const isErrorSvg =
+                result.svg.includes('Syntax error') ||
+                result.svg.includes('error-icon') ||
+                result.svg.includes('dmermaid');
+
+              if (isErrorSvg) {
+                console.warn('[VisualStudio] Mermaid rendered an error SVG. Using built-in Calm Precision flow renderer.');
+                purgeRogueMermaidDOMElements();
+                setMermaidSvg(null);
+                setRenderMode('flow');
+                return;
+              }
+
               setMermaidSvg(result.svg);
               setRenderMode('mermaid');
             }
@@ -169,6 +186,7 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
             purgeRogueMermaidDOMElements();
             console.warn('[VisualStudio] Mermaid render error (seamlessly using SVG flow renderer):', renderError);
             if (!isCancelled) {
+              setMermaidSvg(null);
               setRenderMode('flow');
             }
           }

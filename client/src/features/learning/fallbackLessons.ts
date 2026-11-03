@@ -95,8 +95,8 @@ Notice how no individual part can overwrite history without majority consensus!`
   Client["Client Request"] --> Leader["Elected Leader"]
   Leader --> NodeA["Follower Node 1"]
   Leader --> NodeB["Follower Node 2"]
-  NodeA -.->|Acknowledge| Leader
-  NodeB -.->|Acknowledge| Leader
+  NodeA -.->|"Acknowledge"| Leader
+  NodeB -.->|"Acknowledge"| Leader
   Leader --> Commit["Committed to Log"]`,
         stages: [
           { step: 1, label: 'Client Request', description: 'User submits an update to the cluster.' },
@@ -638,7 +638,7 @@ Raft solves this with **Randomized Election Timeouts** (e.g., uniformly chosen b
       caption: 'State transitions between Follower, Candidate, and Leader states.',
       mermaidCode: `flowchart TD
   Start(["Cluster Online"]) --> Follower["Follower State"]
-  Follower -->|"Election Timeout (No Heartbeat)"| Candidate["Candidate State"]
+  Follower -->|"Election Timeout without Heartbeat"| Candidate["Candidate State"]
   Candidate -->|"Majority Votes Acquired"| Leader["Leader State"]
   Candidate -->|"Discovers Higher Term"| Follower
   Candidate -->|"Split Vote Timeout"| Candidate
