@@ -6,14 +6,16 @@ export interface FormattedProseProps {
   className?: string;
 }
 
-// Safely renders inline text containing bold, italic, inline code, and inline LaTeX math ($...$)
+// Safely renders inline text containing bold, italic, bold-italic, links, inline code, and inline LaTeX math ($...$)
 function renderInlineFormatted(text: string): React.ReactNode[] {
   // Regex to match:
   // 1. Inline math: $...$
   // 2. Inline code: `...`
-  // 3. Bold: **...** or __...__
-  // 4. Italic: *...* or _..._
-  const tokenRegex = /(\$[^$]+\$|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_)/g;
+  // 3. Markdown links: [text](url)
+  // 4. Bold-Italic: ***...***
+  // 5. Bold: **...** or __...__
+  // 6. Italic: *...* or _..._
+  const tokenRegex = /(\$[^$]+\$|`[^`]+`|\[[^\]]+\]\([^)]+\)|\*\*\*[^*]+?\*\*\*|\*\*[^*]+?\*\*|__[^_]+?__|\*[^*]+?\*|_[^_]+?_)/g;
   const parts = text.split(tokenRegex);
 
   return parts.map((part, index) => {
@@ -45,6 +47,31 @@ function renderInlineFormatted(text: string): React.ReactNode[] {
         >
           {part.slice(1, -1)}
         </code>
+      );
+    }
+
+    // Markdown Links: [label](url)
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      return (
+        <a
+          key={index}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-zinc-950 dark:text-white underline decoration-zinc-400 hover:decoration-zinc-950 dark:hover:decoration-white font-medium transition-colors"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+
+    // Bold-Italic: ***...***
+    if (part.startsWith('***') && part.endsWith('***') && part.length > 6) {
+      return (
+        <strong key={index} className="font-bold italic text-zinc-950 dark:text-white">
+          {part.slice(3, -3)}
+        </strong>
       );
     }
 

@@ -9,37 +9,64 @@ export interface VisualStudioProps {
   diagram: VisualDiagramData;
 }
 
-// Parses simple mermaid flowcharts into structured nodes and edges for pure SVG rendering
+// Parses flowchart/graph text into structured nodes and edges for pure zero-dependency SVG rendering
 function parseMermaidFallback(code: string) {
-  const lines = code.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('%%') && !l.startsWith('graph') && !l.startsWith('flowchart'));
+  if (!code) return { nodes: [], edges: [] };
+
+  const lines = code
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(
+      (l) =>
+        l &&
+        !l.startsWith('%%') &&
+        !l.startsWith('graph') &&
+        !l.startsWith('flowchart') &&
+        !l.startsWith('subgraph') &&
+        !l.startsWith('end') &&
+        !l.startsWith('style') &&
+        !l.startsWith('classDef') &&
+        !l.startsWith('class')
+    );
+
   const nodesMap = new Map<string, string>();
   const edges: Array<{ from: string; to: string; label?: string }> = [];
 
   for (const line of lines) {
-    const arrowMatch = line.split(/-->|->/);
-    if (arrowMatch.length >= 2) {
-      const leftPart = arrowMatch[0].trim();
-      const rightPart = arrowMatch[1].trim();
+    const arrowParts = line.split(/-->|-\.->|==>|->/);
+    if (arrowParts.length >= 2) {
+      for (let i = 0; i < arrowParts.length - 1; i++) {
+        const leftPart = arrowParts[i].trim();
+        let rightPart = arrowParts[i + 1].trim();
 
-      const leftNodeMatch = leftPart.match(/^([a-zA-Z0-9_\-]+)(?:\[["']?(.*?)["']?\])?/);
-      const leftId = leftNodeMatch ? leftNodeMatch[1] : leftPart;
-      const leftLabel = leftNodeMatch && leftNodeMatch[2] ? leftNodeMatch[2] : leftId;
-      nodesMap.set(leftId, leftLabel);
+        let edgeLabel: string | undefined;
+        const edgeLabelMatch = rightPart.match(/^\|([^|]+)\|\s*(.*)/);
+        if (edgeLabelMatch) {
+          edgeLabel = edgeLabelMatch[1].replace(/["']/g, '');
+          rightPart = edgeLabelMatch[2];
+        }
 
-      let edgeLabel: string | undefined;
-      let cleanRight = rightPart;
-      const edgeLabelMatch = cleanRight.match(/^\|([^|]+)\|\s*(.*)/);
-      if (edgeLabelMatch) {
-        edgeLabel = edgeLabelMatch[1];
-        cleanRight = edgeLabelMatch[2];
+        const extractNode = (raw: string) => {
+          const match = raw.match(
+            /^([a-zA-Z0-9_\-]+)(?:\[["']?(.*?)["']?\]|\(\["?(.*?)"?\]\)|\(["']?(.*?)["']?\)|\[\((.*?)\)\]|\{["']?(.*?)["']?\})?/
+          );
+          if (match) {
+            const id = match[1];
+            const label = match[2] || match[3] || match[4] || match[5] || match[6] || id;
+            return { id, label: label.replace(/["']/g, '').trim() };
+          }
+          return { id: raw, label: raw };
+        };
+
+        const left = extractNode(leftPart);
+        const right = extractNode(rightPart);
+
+        if (left.id && left.label) nodesMap.set(left.id, left.label);
+        if (right.id && right.label) nodesMap.set(right.id, right.label);
+        if (left.id && right.id) {
+          edges.push({ from: left.id, to: right.id, label: edgeLabel });
+        }
       }
-
-      const rightNodeMatch = cleanRight.match(/^([a-zA-Z0-9_\-]+)(?:\[["']?(.*?)["']?\])?/);
-      const rightId = rightNodeMatch ? rightNodeMatch[1] : cleanRight;
-      const rightLabel = rightNodeMatch && rightNodeMatch[2] ? rightNodeMatch[2] : rightId;
-      nodesMap.set(rightId, rightLabel);
-
-      edges.push({ from: leftId, to: rightId, label: edgeLabel });
     }
   }
 
@@ -52,11 +79,25 @@ function parseMermaidFallback(code: string) {
   return { nodes, edges };
 }
 
+// Remove any rogue error divs that Mermaid 10 injects into document.body
+function purgeRogueMermaidDOMElements() {
+  if (typeof document === 'undefined') return;
+  try {
+    const rogues = document.querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon');
+    rogues.forEach((el) => {
+      if (el.parentElement === document.body) {
+        el.remove();
+      }
+    });
+  } catch {
+    // Ignore DOM removal errors
+  }
+}
+
 export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
   const [renderMode, setRenderMode] = useState<'mermaid' | 'flow' | 'raw'>('flow');
-  const [isMermaidLoading, setIsMermaidLoading] = useState<boolean>(false);
   const [mermaidSvg, setMermaidSvg] = useState<string | null>(null);
   const { resolvedTheme } = useTheme();
 
@@ -67,19 +108,20 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
   useEffect(() => {
     let isCancelled = false;
 
+    // Purge any rogue elements immediately on mount
+    purgeRogueMermaidDOMElements();
+
     const tryLoadMermaid = async () => {
       const win = typeof window !== 'undefined' ? (window as any) : null;
       if (!win) return;
 
       try {
-        setIsMermaidLoading(true);
-
         if (!win.mermaid) {
           await new Promise<void>((resolve, reject) => {
             const existingScript = document.getElementById('mermaid-cdn-script');
             if (existingScript) {
               existingScript.addEventListener('load', () => resolve());
-              existingScript.addEventListener('error', () => reject(new Error('CDN load failed')));
+              existingScript.addEventListener('error', () => reject(new Error('CDN failed')));
               return;
             }
 
@@ -99,23 +141,42 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
             theme: resolvedTheme === 'dark' ? 'dark' : 'default',
             securityLevel: 'loose',
             fontFamily: 'Inter, sans-serif',
+            suppressErrorRendering: true,
           });
 
-          const uniqueId = `mermaid-${Date.now()}`;
-          const { svg } = await win.mermaid.render(uniqueId, diagram.mermaidCode);
-          if (!isCancelled) {
-            setMermaidSvg(svg);
-            setRenderMode('mermaid');
+          purgeRogueMermaidDOMElements();
+
+          try {
+            // Validate syntax first if parse function is available
+            if (typeof win.mermaid.parse === 'function') {
+              const isValid = await win.mermaid.parse(diagram.mermaidCode).catch(() => false);
+              if (!isValid) {
+                purgeRogueMermaidDOMElements();
+                if (!isCancelled) setRenderMode('flow');
+                return;
+              }
+            }
+
+            const uniqueId = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+            const result = await win.mermaid.render(uniqueId, diagram.mermaidCode);
+            purgeRogueMermaidDOMElements();
+
+            if (!isCancelled && result && result.svg) {
+              setMermaidSvg(result.svg);
+              setRenderMode('mermaid');
+            }
+          } catch (renderError) {
+            purgeRogueMermaidDOMElements();
+            console.warn('[VisualStudio] Mermaid render error (seamlessly using SVG flow renderer):', renderError);
+            if (!isCancelled) {
+              setRenderMode('flow');
+            }
           }
         }
       } catch (err) {
-        console.info('[VisualStudio] Using built-in Calm Precision SVG diagram renderer:', (err as Error).message);
+        purgeRogueMermaidDOMElements();
         if (!isCancelled) {
           setRenderMode('flow');
-        }
-      } finally {
-        if (!isCancelled) {
-          setIsMermaidLoading(false);
         }
       }
     };
@@ -124,6 +185,7 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
 
     return () => {
       isCancelled = true;
+      purgeRogueMermaidDOMElements();
     };
   }, [diagram.mermaidCode, resolvedTheme]);
 

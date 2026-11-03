@@ -59,9 +59,9 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
 
   const [currentTier, setCurrentTier] = useState<PedagogicalTier>(initialTier);
   const [currentMode, setCurrentMode] = useState<PedagogicalMode>('learn');
-  const [lesson, setLesson] = useState<LessonContent | null>(null);
+  const [lesson, setLesson] = useState<LessonContent | null>(() => getClientFallbackLesson(topicId, initialTier));
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [isLoadingLesson, setIsLoadingLesson] = useState(true);
+  const [isLoadingLesson, setIsLoadingLesson] = useState(false);
   const [sessionSeconds, setSessionSeconds] = useState(0);
 
   // Panels collapse states
@@ -387,7 +387,7 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
 
         {/* CENTRAL LEARNING CANVAS */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 relative bg-zinc-50/40 dark:bg-black">
-          {isLoadingLesson ? (
+          {isLoadingLesson && !lesson ? (
             <div className="flex flex-col items-center justify-center h-full space-y-4">
               <div className="w-8 h-8 rounded-full border-2 border-zinc-900 dark:border-white border-t-transparent animate-spin" />
               <p className="text-xs text-zinc-500 font-mono">
@@ -416,8 +416,12 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
               )}
             </div>
           ) : (
-            <div className="text-center py-16 text-zinc-500 font-mono text-xs">
-              <p>Unable to load lesson for this topic.</p>
+            <div>
+              {/* Resilient fallback rendering ensures zero blank screens */}
+              <LearnStudio
+                sections={getClientFallbackLesson(topicId, currentTier).sections}
+                topicTitle={getClientFallbackLesson(topicId, currentTier).topicTitle}
+              />
             </div>
           )}
         </main>

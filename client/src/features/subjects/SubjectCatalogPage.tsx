@@ -64,13 +64,19 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         filtered = filtered.filter((s) => s.category.toLowerCase() === selectedCategory.toLowerCase());
       }
       if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        filtered = filtered.filter((s) => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+        const q = searchQuery.toLowerCase().trim();
+        filtered = filtered.filter(
+          (s) =>
+            s.title.toLowerCase().includes(q) ||
+            s.description.toLowerCase().includes(q) ||
+            s.topics?.some((t) => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q))
+        );
       }
-      const finalSubjects = filtered.length > 0 ? filtered : FALLBACK_CURRICULUM_CATALOG;
-      setSubjects(finalSubjects);
-      if (!selectedSubjectId || !finalSubjects.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
-        setSelectedSubjectId(finalSubjects[0].slug || finalSubjects[0].id);
+      setSubjects(filtered);
+      if (filtered.length > 0) {
+        if (!selectedSubjectId || !filtered.some((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId)) {
+          setSelectedSubjectId(filtered[0].slug || filtered[0].id);
+        }
       }
     };
 
@@ -85,7 +91,16 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
       try {
         const data = await api.subjects.listTopics(selectedSubjectId);
         if (data && data.length > 0) {
-          setTopics(data);
+          // If search query is present, filter the topics
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase().trim();
+            const filteredTopics = data.filter(
+              (t) => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q)
+            );
+            setTopics(filteredTopics.length > 0 ? filteredTopics : data);
+          } else {
+            setTopics(data);
+          }
           return;
         }
       } catch (err) {
@@ -97,14 +112,22 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
         (s) => s.slug === selectedSubjectId || s.id === selectedSubjectId
       );
       if (fallbackSub) {
-        setTopics(fallbackSub.topics);
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase().trim();
+          const filteredTopics = fallbackSub.topics.filter(
+            (t) => t.title.toLowerCase().includes(q) || t.summary.toLowerCase().includes(q)
+          );
+          setTopics(filteredTopics.length > 0 ? filteredTopics : fallbackSub.topics);
+        } else {
+          setTopics(fallbackSub.topics);
+        }
       } else {
         setTopics(FALLBACK_CURRICULUM_CATALOG[0].topics);
       }
     };
 
     fetchTopics();
-  }, [selectedSubjectId]);
+  }, [selectedSubjectId, searchQuery]);
 
   const selectedSubject =
     subjects.find((s) => s.id === selectedSubjectId || s.slug === selectedSubjectId) ||
@@ -212,6 +235,21 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
                 </div>
               );
             })}
+
+            {subjects.length === 0 && (
+              <div className="p-6 text-center rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 space-y-2">
+                <p className="text-xs text-zinc-500 font-mono">No matching disciplines found</p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setSearchQuery('');
+                  }}
+                  className="text-xs font-bold underline text-zinc-950 dark:text-white"
+                >
+                  Reset filters
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -289,6 +327,25 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
                 </div>
               </div>
             ))}
+
+            {topics.length === 0 && (
+              <div className="p-12 text-center rounded-2xl bg-white dark:bg-[#09090b] border border-zinc-200 dark:border-zinc-800 space-y-3">
+                <BookOpen className="w-8 h-8 text-zinc-400 mx-auto" />
+                <h4 className="text-sm font-bold text-zinc-950 dark:text-white">No topics found in this selection</h4>
+                <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                  Try clearing your search query or selecting another discipline to explore topics.
+                </p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setSearchQuery('');
+                  }}
+                  className="px-4 py-2 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
+                >
+                  View All Topics
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -342,15 +342,15 @@ We implement non-blocking coordination using atomic primitives (e.g., \`compare_
         type: 'mermaid',
         title: `Formal State Transition & Invariant Enforcement`,
         caption: 'Formal state diagram demonstrating invariant preservation across concurrent mutation events.',
-        mermaidCode: `stateDiagram-v2
-  [*] --> InvariantMaintained: Initialize System
-  InvariantMaintained --> MutationPending: Propose Delta e
-  MutationPending --> AtomicCASValidation: Compare-and-Swap
-  AtomicCASValidation --> InvariantMaintained: Invariant holds Phi(s')
-  AtomicCASValidation --> BackoffRetry: CAS Conflict (Contention)
-  BackoffRetry --> MutationPending: Exponential Jitter
-  InvariantMaintained --> DistributedQuorum: Commit to Consensus Log
-  DistributedQuorum --> [*]: Acknowledged by Quorum (2F+1)`,
+        mermaidCode: `flowchart TD
+  Init(["Initialize System"]) --> InvariantMaintained["Invariant Maintained"]
+  InvariantMaintained --> MutationPending["Propose Delta Mutation"]
+  MutationPending --> AtomicCASValidation{"Atomic CAS Validation"}
+  AtomicCASValidation -->|"Invariant Holds"| InvariantMaintained
+  AtomicCASValidation -->|"CAS Conflict"| BackoffRetry["Exponential Jitter Backoff"]
+  BackoffRetry --> MutationPending
+  InvariantMaintained --> DistributedQuorum["Distributed Quorum Commit"]
+  DistributedQuorum --> Done(["Committed State Transition"])`,
         stages: [
           { step: 1, label: 'Invariant Maintained', description: 'System in verified stable state satisfying all predicates.' },
           { step: 2, label: 'Atomic CAS Validation', description: 'Hardware-level atomic instruction ensures zero data races.' },

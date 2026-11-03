@@ -91,15 +91,13 @@ Notice how no individual part can overwrite history without majority consensus!`
         type: 'mermaid',
         title: `Intuitive Conceptual Flow: ${topicTitle}`,
         caption: 'Visualizing client request routing through the leader node to follower confirmation.',
-        mermaidCode: `graph LR
-  Client[Client Request] --> Leader[Elected Leader]
-  Leader --> NodeA[Follower Node 1]
-  Leader --> NodeB[Follower Node 2]
+        mermaidCode: `flowchart LR
+  Client["Client Request"] --> Leader["Elected Leader"]
+  Leader --> NodeA["Follower Node 1"]
+  Leader --> NodeB["Follower Node 2"]
   NodeA -.->|Acknowledge| Leader
   NodeB -.->|Acknowledge| Leader
-  Leader --> Commit[Committed to Log]
-  style Leader fill:#0d9488,stroke:#0f766e,color:#fff
-  style Commit fill:#2563eb,stroke:#1d4ed8,color:#fff`,
+  Leader --> Commit["Committed to Log"]`,
         stages: [
           { step: 1, label: 'Client Request', description: 'User submits an update to the cluster.' },
           { step: 2, label: 'Leader Replicate', description: 'Leader forwards proposed log entry to followers.' },
@@ -365,14 +363,15 @@ During transition, decisions require independent majorities from both $\\mathcal
         type: 'mermaid',
         title: `Formal State Transition: Leader Monotonicity & Invariants`,
         caption: 'Mathematical state transition diagram proving invariant safety across election terms.',
-        mermaidCode: `stateDiagram-v2
-  [*] --> Follower: Bootstrapped
-  Follower --> Candidate: Election Timeout Elapsed
-  Candidate --> Leader: Obtains Quorum of Votes
-  Candidate --> Follower: Observes Higher Term
-  Leader --> Follower: Discovers Peer with Term > CurrentTerm
-  Leader --> Leader: Heartbeat & Log Replication
-  style Leader fill:#7c3aed,stroke:#6d28d9,color:#fff`,
+        mermaidCode: `flowchart TD
+  Init(["Node Bootstrapped"]) --> Follower["Follower: Term T"]
+  Follower -->|"Election Timeout Elapsed"| PreVote{"Pre-Vote Quorum Check"}
+  PreVote -->|"Quorum Confirmed"| Candidate["Candidate: RequestVote Term T+1"]
+  PreVote -->|"No Quorum"| Follower
+  Candidate -->|"Majority Votes Secured"| Leader["Leader: Linearizable AppendEntries"]
+  Candidate -->|"Higher Term Discovered"| Follower
+  Leader -->|"Higher Term Discovered"| Follower
+  Leader -->|"Pipelined Heartbeat & Replication"| Leader`,
         stages: [
           { step: 1, label: 'Candidate Propose', description: 'Increments term, votes for self, broadcasts RequestVote RPC.' },
           { step: 2, label: 'Quorum Acquisition', description: 'Secures strict majority of cluster votes including log recency checks.' },
@@ -637,15 +636,14 @@ Raft solves this with **Randomized Election Timeouts** (e.g., uniformly chosen b
       type: 'mermaid',
       title: `Raft 3-Role State Machine`,
       caption: 'State transitions between Follower, Candidate, and Leader states.',
-      mermaidCode: `stateDiagram-v2
-  [*] --> Follower
-  Follower --> Candidate: Times out (No Heartbeat)
-  Candidate --> Leader: Votes from Majority
-  Candidate --> Follower: Discovers Leader / Higher Term
-  Candidate --> Candidate: Split Vote (Times out)
-  Leader --> Follower: Discovers Higher Term
-  style Leader fill:#2563eb,stroke:#1d4ed8,color:#fff
-  style Follower fill:#0d9488,stroke:#0f766e,color:#fff`,
+      mermaidCode: `flowchart TD
+  Start(["Cluster Online"]) --> Follower["Follower State"]
+  Follower -->|"Election Timeout (No Heartbeat)"| Candidate["Candidate State"]
+  Candidate -->|"Majority Votes Acquired"| Leader["Leader State"]
+  Candidate -->|"Discovers Higher Term"| Follower
+  Candidate -->|"Split Vote Timeout"| Candidate
+  Leader -->|"Discovers Higher Term"| Follower
+  Leader -->|"Heartbeats & Replication"| Leader`,
       stages: [
         { step: 1, label: 'Follower', description: 'Listens for heartbeats and appends verified entries.' },
         { step: 2, label: 'Candidate', description: 'Sollicits votes from peers with election timer.' },

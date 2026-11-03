@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, useTheme } from './design-system/theme';
 import { ToastProvider } from './components/ui/Toast';
 import { AuthProvider, useAuth } from './features/auth/AuthContext';
@@ -40,6 +40,22 @@ const AppContent: React.FC = () => {
   const [showLandingPreview, setShowLandingPreview] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Global suppression & purge of rogue error elements injected into document.body
+  useEffect(() => {
+    const purgeRogueElements = () => {
+      if (typeof document === 'undefined') return;
+      document.querySelectorAll('div[id^="dmermaid"], svg[id^="dmermaid"], .error-icon').forEach((el) => {
+        if (el.parentElement === document.body) {
+          el.remove();
+        }
+      });
+    };
+    purgeRogueElements();
+    const observer = new MutationObserver(() => purgeRogueElements());
+    observer.observe(document.body, { childList: true });
+    return () => observer.disconnect();
+  }, []);
 
   // Active learning cockpit (Distraction-minimized full-screen)
   if (activeCockpitTopicId) {

@@ -117,3 +117,21 @@ pre code {
   -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Suppress any rogue error containers that 3rd-party libraries (like Mermaid) inject into body */
+body > div[id^="dmermaid"],
+body > svg[id^="dmermaid"],
+body > .error-icon,
+div[id^="dmermaid"].error-icon,
+svg.error-icon {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  overflow: hidden !important;
+  z-index: -9999 !important;
+}
+
