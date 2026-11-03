@@ -77,3 +77,4 @@ If you wish to use local neural inference:
    ollama pull qwen2.5-coder:7b
    ```
 3. Ensure Ollama is running (`ollama serve`). CogFlow will automatically detect it at `http://127.0.0.1:11434` and route generation requests to it.
+

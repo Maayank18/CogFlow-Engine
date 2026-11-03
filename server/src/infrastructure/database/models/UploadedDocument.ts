@@ -84,3 +84,4 @@ UploadedDocumentSchema.index({ userId: 1, createdAt: -1 });
 export const UploadedDocumentModel =
   mongoose.models.UploadedDocument ||
   mongoose.model<IUploadedDocument>('UploadedDocument', UploadedDocumentSchema);
+

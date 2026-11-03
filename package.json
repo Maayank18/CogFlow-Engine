@@ -9,7 +9,8 @@
     "client"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+    "predev": "npm run build:shared",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,CLIENT\" -c \"blue.bold,green.bold\" \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm run dev --workspace=server",
     "dev:client": "npm run dev --workspace=client",
     "build": "npm run build --workspace=shared && npm run build --workspace=server && npm run build --workspace=client",
@@ -31,7 +32,7 @@
   ],
   "author": "CogFlow Team",
   "license": "MIT",
-  "allowScripts": {
-    "esbuild": true
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

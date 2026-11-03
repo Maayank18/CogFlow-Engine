@@ -215,3 +215,4 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onComp
     </Modal>
   );
 };
+

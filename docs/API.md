@@ -171,3 +171,4 @@ Uploads a syllabus (PDF, TXT, or MD up to 25MB). Extracts candidate learning mod
 
 ### `GET /api/v1/analytics/overview`
 Returns time studied, sessions completed, topics mastered, average assessment score, cognitive distribution (seconds in Flow, Overload, Boredom), and recent adaptation events.
+

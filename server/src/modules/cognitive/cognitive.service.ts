@@ -86,3 +86,4 @@ export class CognitiveService {
 }
 
 export const cognitiveService = new CognitiveService();
+

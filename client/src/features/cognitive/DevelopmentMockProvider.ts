@@ -89,3 +89,4 @@ export class DevelopmentMockProvider implements CognitiveInferenceProvider {
 }
 
 export const developmentMockProvider = new DevelopmentMockProvider();
+

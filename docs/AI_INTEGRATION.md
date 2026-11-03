@@ -71,3 +71,4 @@ When stream finishes:
 { "content": "", "isComplete": true, "provider": "ollama" }
 ```
 The frontend consumes chunks incrementally, ensuring fast time-to-first-token (TTFT) even for large lessons.
+

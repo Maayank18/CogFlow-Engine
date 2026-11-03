@@ -98,3 +98,4 @@ AssessmentAttemptSchema.index({ userId: 1, topicId: 1, submittedAt: -1 });
 export const AssessmentAttemptModel =
   mongoose.models.AssessmentAttempt ||
   mongoose.model<IAssessmentAttempt>('AssessmentAttempt', AssessmentAttemptSchema);
+

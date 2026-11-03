@@ -279,3 +279,4 @@ export const PracticeStudio: React.FC<PracticeStudioProps> = ({
     </div>
   );
 };
+

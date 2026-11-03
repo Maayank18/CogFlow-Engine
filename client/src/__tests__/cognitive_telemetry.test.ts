@@ -43,3 +43,4 @@ describe('Cognitive Telemetry Provider Contracts', () => {
     expect(res.source).toBe('rule_fallback');
   });
 });
+

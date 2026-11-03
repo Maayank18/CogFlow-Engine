@@ -109,3 +109,4 @@ describe('CogFlow Backend API Integration Suite', () => {
     expect(overview.recentAdaptations[0].toTier).toBe('B');
   });
 });
+

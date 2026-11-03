@@ -12,3 +12,4 @@ router.patch('/:noteId', notesController.updateNote.bind(notesController));
 router.delete('/:noteId', notesController.deleteNote.bind(notesController));
 
 export const notesRoutes = router;
+

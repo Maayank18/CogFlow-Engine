@@ -89,3 +89,4 @@ export const inMemoryStore = {
   cognitiveEvents: new CollectionImpl<any>(),
   adaptationEvents: new CollectionImpl<any>(),
 };
+

@@ -68,3 +68,4 @@ CognitiveEventSchema.index({ sessionId: 1, observedAt: -1 });
 export const CognitiveEventModel =
   mongoose.models.CognitiveEvent ||
   mongoose.model<ICognitiveEvent>('CognitiveEvent', CognitiveEventSchema);
+

@@ -99,3 +99,4 @@ To prevent disruptive UI flickering and erratic pacing caused by momentary micro
 1. **Zero Video Transmission**: Webcam streams are bound strictly to local HTML5 video elements. No webcam frame, image buffer, or facial landmark coordinate is ever transmitted to the server or cloud AI providers.
 2. **Optional Monitoring**: The camera is disabled by default. Learners can use CogFlow with the camera turned off, relying on behavioral timing telemetry or manual tier selection.
 3. **Aggregated Telemetry Only**: Only coarse normalized labels (e.g. `FLOW`, confidence `0.85`, timestamp) are recorded to the backend database to compute session mastery and adaptation logs. Raw telemetry expires via MongoDB TTL after 30 days.
+

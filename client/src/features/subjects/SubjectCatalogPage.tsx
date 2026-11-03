@@ -255,3 +255,4 @@ export const SubjectCatalogPage: React.FC<SubjectCatalogPageProps> = ({ onSelect
     </div>
   );
 };
+

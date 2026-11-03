@@ -46,3 +46,4 @@ const ContentCacheSchema = new Schema<IContentCache>(
 export const ContentCacheModel =
   mongoose.models.ContentCache ||
   mongoose.model<IContentCache>('ContentCache', ContentCacheSchema);
+

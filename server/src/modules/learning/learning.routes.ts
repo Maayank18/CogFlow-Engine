@@ -26,3 +26,4 @@ router.get('/topics/:topicId/lesson', learningController.getLesson.bind(learning
 router.post('/topics/:topicId/adapt', learningController.adaptTier.bind(learningController));
 
 export const learningRoutes = router;
+

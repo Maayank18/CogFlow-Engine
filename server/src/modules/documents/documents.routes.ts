@@ -17,3 +17,4 @@ router.get('/:documentId', documentsController.getDocument.bind(documentsControl
 router.delete('/:documentId', documentsController.deleteDocument.bind(documentsController));
 
 export const documentsRoutes = router;
+

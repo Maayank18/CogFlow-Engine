@@ -28,3 +28,4 @@ router.post(
 router.get('/sessions/:sessionId', cognitiveController.getSessionEvents.bind(cognitiveController));
 
 export const cognitiveRoutes = router;
+

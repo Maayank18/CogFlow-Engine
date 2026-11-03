@@ -65,3 +65,4 @@ export interface AdaptationHistoryItem {
   cognitiveStateAtTransition: CognitiveState;
   acceptedByUser: boolean;
 }
+

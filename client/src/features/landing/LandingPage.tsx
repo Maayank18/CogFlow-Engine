@@ -269,3 +269,4 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning, onOpe
     </div>
   );
 };
+

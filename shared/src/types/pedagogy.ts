@@ -107,3 +107,4 @@ export interface LessonContent {
   createdAt: string;
   updatedAt: string;
 }
+

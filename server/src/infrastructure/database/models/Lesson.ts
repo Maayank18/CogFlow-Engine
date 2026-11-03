@@ -198,3 +198,4 @@ LessonSchema.index({ topicId: 1, tier: 1 }, { unique: true });
 
 export const LessonModel =
   mongoose.models.Lesson || mongoose.model<ILesson>('Lesson', LessonSchema);
+

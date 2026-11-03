@@ -59,3 +59,4 @@ LearningNoteSchema.index({ userId: 1, topicId: 1 });
 export const LearningNoteModel =
   mongoose.models.LearningNote ||
   mongoose.model<ILearningNote>('LearningNote', LearningNoteSchema);
+

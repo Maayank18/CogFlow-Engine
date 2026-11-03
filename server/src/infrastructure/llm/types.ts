@@ -39,3 +39,4 @@ export interface LLMProvider {
     options?: GenerationOptions
   ): AsyncIterable<LLMChunk>;
 }
+

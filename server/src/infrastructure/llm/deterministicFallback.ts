@@ -560,3 +560,4 @@ export class ${topicTitle.replace(/[^a-zA-Z]/g, '')}Service<T> {
     updatedAt: new Date().toISOString(),
   };
 }
+

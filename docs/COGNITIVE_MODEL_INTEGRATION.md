@@ -90,3 +90,4 @@ It supports 4 explicit scenarios:
 2. `sustained_overload`: Sustained `OVERLOAD` (confidence ~0.88), triggers proposal to step down to Tier B after 30s.
 3. `sustained_boredom`: Sustained `BOREDOM` (confidence ~0.84), triggers proposal to step up to Tier S after 30s.
 4. `jitter_fluctuating`: Alternates state every 5 seconds to verify that momentary fluctuations do NOT trigger the 30-second sustained adaptation invariant.
+

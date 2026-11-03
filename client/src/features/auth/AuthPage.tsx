@@ -160,3 +160,4 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onSuccess, onCancel }) => {
     </div>
   );
 };
+

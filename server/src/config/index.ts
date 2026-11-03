@@ -77,3 +77,4 @@ export const config: AppConfig = {
     uploadDir: path.resolve(process.cwd(), process.env.UPLOAD_DIR || './uploads'),
   },
 };
+

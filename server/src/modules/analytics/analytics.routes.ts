@@ -9,3 +9,4 @@ router.use(requireAuth);
 router.get('/overview', analyticsController.getOverview.bind(analyticsController));
 
 export const analyticsRoutes = router;
+

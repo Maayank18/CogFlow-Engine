@@ -64,3 +64,4 @@ export class SubjectsController {
 }
 
 export const subjectsController = new SubjectsController();
+

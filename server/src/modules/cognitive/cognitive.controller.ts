@@ -53,3 +53,4 @@ export class CognitiveController {
 }
 
 export const cognitiveController = new CognitiveController();
+

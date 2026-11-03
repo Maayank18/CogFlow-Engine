@@ -57,3 +57,4 @@ const SubjectSchema = new Schema<ISubject>(
 
 export const SubjectModel =
   mongoose.models.Subject || mongoose.model<ISubject>('Subject', SubjectSchema);
+

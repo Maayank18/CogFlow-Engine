@@ -178,3 +178,4 @@ export function useCognitiveTelemetry({
     setSimulationScenario: changeScenario,
   };
 }
+

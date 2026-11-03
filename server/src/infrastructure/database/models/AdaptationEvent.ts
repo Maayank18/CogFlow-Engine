@@ -70,3 +70,4 @@ AdaptationEventSchema.index({ userId: 1, timestamp: -1 });
 export const AdaptationEventModel =
   mongoose.models.AdaptationEvent ||
   mongoose.model<IAdaptationEvent>('AdaptationEvent', AdaptationEventSchema);
+

@@ -12,3 +12,4 @@ router.post('/chat/stream', aiController.streamChat.bind(aiController));
 router.post('/questions/answer', aiController.askQuestion.bind(aiController));
 
 export const aiRoutes = router;
+

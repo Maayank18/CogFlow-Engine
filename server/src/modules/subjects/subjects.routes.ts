@@ -9,3 +9,4 @@ router.get('/:subjectId/topics', subjectsController.listTopics.bind(subjectsCont
 router.get('/topics/:topicId', subjectsController.getTopic.bind(subjectsController));
 
 export const subjectsRoutes = router;
+

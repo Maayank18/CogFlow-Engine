@@ -69,3 +69,4 @@ TopicSchema.index({ subjectId: 1, slug: 1 }, { unique: true });
 
 export const TopicModel =
   mongoose.models.Topic || mongoose.model<ITopic>('Topic', TopicSchema);
+

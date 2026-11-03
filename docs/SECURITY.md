@@ -41,3 +41,4 @@ Security in CogFlow is engineered directly into every tier of the application ra
 - **Zero Video Frame Uploads**: HTML5 webcam video frames exist only in local browser memory. No webcam frame, image buffer, or facial landmark coordinate is ever sent over the wire.
 - **Explicit Consent**: Monitoring is completely optional. Camera permissions are never requested upon initial sign-up, and users can use CogFlow with the camera disabled.
 - **Data Retention & TTL**: Normalized cognitive event logs automatically expire from MongoDB after 30 days via a TTL index.
+

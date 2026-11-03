@@ -96,3 +96,4 @@ export const AdaptationEventSubmissionSchema = z.object({
   accepted: z.boolean(),
   sustainedDurationSeconds: z.number().nonnegative(),
 });
+

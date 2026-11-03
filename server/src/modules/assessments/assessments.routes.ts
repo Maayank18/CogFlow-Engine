@@ -11,3 +11,4 @@ router.post('/topics/:topicId/submit', assessmentsController.submitAttempt.bind(
 router.get('/attempts', assessmentsController.listAttempts.bind(assessmentsController));
 
 export const assessmentsRoutes = router;
+

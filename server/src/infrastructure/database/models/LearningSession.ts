@@ -80,3 +80,4 @@ LearningSessionSchema.index({ userId: 1, isCompleted: 1, lastActiveAt: -1 });
 export const LearningSessionModel =
   mongoose.models.LearningSession ||
   mongoose.model<ILearningSession>('LearningSession', LearningSessionSchema);
+

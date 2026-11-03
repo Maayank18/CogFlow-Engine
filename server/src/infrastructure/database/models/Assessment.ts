@@ -65,3 +65,4 @@ AssessmentSchema.index({ topicId: 1, tier: 1 });
 export const AssessmentModel =
   mongoose.models.Assessment ||
   mongoose.model<IAssessment>('Assessment', AssessmentSchema);
+
