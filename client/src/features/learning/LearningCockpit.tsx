@@ -16,6 +16,7 @@ import { VisualStudio } from './studios/VisualStudio';
 import { CodeStudio } from './studios/CodeStudio';
 import { NotesStudio } from './studios/NotesStudio';
 import { PracticeStudio } from './studios/PracticeStudio';
+import { getClientFallbackLesson } from './fallbackLessons';
 
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -122,20 +123,40 @@ export const LearningCockpit: React.FC<LearningCockpitProps> = ({
     const init = async () => {
       setIsLoadingLesson(true);
       try {
-        // Start or resume learning session
-        const session = await api.learning.createSession(topicId, currentTier);
-        if (active) {
-          setSessionId(session.id);
-          setSessionSeconds(session.activeDurationSeconds || 0);
+        // Start or resume learning session with resilient local fallback
+        try {
+          const session = await api.learning.createSession(topicId, currentTier);
+          if (active) {
+            setSessionId(session.id);
+            setSessionSeconds(session.activeDurationSeconds || 0);
+          }
+        } catch {
+          if (active) {
+            setSessionId(`local-session-${Date.now()}`);
+            setSessionSeconds(0);
+          }
         }
 
-        // Fetch lesson at current tier
-        const lessonData = await api.learning.getLesson(topicId, currentTier, false);
-        if (active) {
-          setLesson(lessonData);
+        // Fetch lesson at current tier with instant fallback
+        try {
+          const lessonData = await api.learning.getLesson(topicId, currentTier, false);
+          if (active && lessonData && lessonData.sections && lessonData.sections.length > 0) {
+            setLesson(lessonData);
+          } else {
+            throw new Error('Lesson data empty or invalid');
+          }
+        } catch (err) {
+          console.warn('[Cockpit] Backend lesson deferred, activating instant pedagogical lesson:', err);
+          if (active) {
+            const fallback = getClientFallbackLesson(topicId, currentTier);
+            setLesson(fallback);
+          }
         }
       } catch (err) {
         console.error('Failed to load lesson:', err);
+        if (active) {
+          setLesson(getClientFallbackLesson(topicId, currentTier));
+        }
       } finally {
         if (active) setIsLoadingLesson(false);
       }

@@ -8,6 +8,8 @@ import {
 import { inMemoryStore } from '../../infrastructure/database/inMemoryStore.js';
 import { getDatabaseStatus } from '../../infrastructure/database/index.js';
 import { LLMOrchestrator } from '../../infrastructure/llm/LLMOrchestrator.js';
+import { getDeterministicFallbackLesson } from '../../infrastructure/llm/deterministicFallback.js';
+import { subjectsService } from '../subjects/subjects.service.js';
 import { LessonContent } from '@cogflow/shared';
 
 export class LearningService {
@@ -139,6 +141,7 @@ export class LearningService {
     tier: 'B' | 'A' | 'S' = 'A',
     forceRefresh: boolean = false
   ): Promise<LessonContent> {
+    await subjectsService.ensureCurriculumSeeded();
     const { isInMemoryMode } = getDatabaseStatus();
 
     // Find topic info
@@ -146,20 +149,31 @@ export class LearningService {
     let subject: any;
 
     if (isInMemoryMode) {
-      topic = inMemoryStore.topics.findById(topicId) || inMemoryStore.topics.findOne({ slug: topicId });
+      topic =
+        inMemoryStore.topics.findById(topicId) ||
+        inMemoryStore.topics.findOne((t: any) => t.slug === topicId || t.id === topicId);
       if (topic) {
         subject = inMemoryStore.subjects.findById(topic.subjectId);
       }
     } else {
       const isMongoId = /^[0-9a-fA-F]{24}$/.test(topicId);
-      topic = isMongoId ? await TopicModel.findById(topicId) : await TopicModel.findOne({ slug: topicId });
+      topic = isMongoId
+        ? await TopicModel.findById(topicId)
+        : await TopicModel.findOne({ $or: [{ slug: topicId }, { _id: topicId }] });
       if (topic) {
         subject = await SubjectModel.findById(topic.subjectId);
       }
     }
 
-    const topicTitle = topic ? topic.title : 'Concept Mastery';
-    const subjectTitle = subject ? subject.title : 'Computer Science';
+    const topicTitle =
+      topic?.title ||
+      (topicId.includes('-')
+        ? topicId
+            .split('-')
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ')
+        : 'Concept Mastery');
+    const subjectTitle = subject?.title || 'Computer Science & Distributed Systems';
     const effectiveTopicId = topic ? (topic.id || topic._id).toString() : topicId;
 
     // Check if lesson exists in cache/database
@@ -170,7 +184,10 @@ export class LearningService {
         );
         if (cached) return cached;
       } else {
-        const cached = await LessonModel.findOne({ topicId: effectiveTopicId, tier });
+        const cached = await LessonModel.findOne({
+          $or: [{ topicId: effectiveTopicId }, { topicTitle }],
+          tier,
+        });
         if (cached) {
           return {
             id: cached._id.toString(),
@@ -192,15 +209,34 @@ export class LearningService {
       }
     }
 
-    // Generate through LLM Orchestrator (Ollama -> Groq -> OpenRouter -> Deterministic Fallback)
-    const generated = await this.llmOrchestrator.generateLesson({
-      topicId: effectiveTopicId,
-      topicTitle,
-      subjectTitle,
-      tier,
-      summary: topic?.summary,
-      learningObjectives: topic?.learningObjectives,
+    // Race dynamic generation against responsive 16-second threshold so browser never hangs
+    const timeoutPromise = new Promise<LessonContent>((resolve) => {
+      setTimeout(() => {
+        console.log(
+          `[LearningService] Responsive threshold (16s) reached for "${topicTitle}". Serving structured deterministic lesson.`
+        );
+        resolve(
+          getDeterministicFallbackLesson({
+            topicId: effectiveTopicId,
+            topicTitle,
+            subjectTitle,
+            tier,
+          })
+        );
+      }, 16000);
     });
+
+    const generated = await Promise.race([
+      this.llmOrchestrator.generateLesson({
+        topicId: effectiveTopicId,
+        topicTitle,
+        subjectTitle,
+        tier,
+        summary: topic?.summary,
+        learningObjectives: topic?.learningObjectives,
+      }),
+      timeoutPromise,
+    ]);
 
     // Save to database
     if (isInMemoryMode) {
