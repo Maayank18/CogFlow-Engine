@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+export type Theme = 'light' | 'comfort' | 'dark' | 'system';
+export type ResolvedTheme = 'light' | 'comfort' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
-  resolvedTheme: 'light' | 'dark';
+  resolvedTheme: ResolvedTheme;
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
@@ -16,13 +17,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return (localStorage.getItem('cogflow_theme') as Theme) || 'system';
   });
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('dark');
 
   useEffect(() => {
     const root = document.documentElement;
 
     const applyTheme = () => {
-      let active: 'light' | 'dark';
+      let active: ResolvedTheme;
       if (theme === 'system') {
         active = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       } else {
@@ -31,10 +32,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
       setResolvedTheme(active);
 
+      root.classList.remove('dark', 'comfort', 'light');
       if (active === 'dark') {
         root.classList.add('dark');
+      } else if (active === 'comfort') {
+        root.classList.add('comfort');
       } else {
-        root.classList.remove('dark');
+        root.classList.add('light');
       }
     };
 
@@ -49,8 +53,15 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [theme]);
 
+  // Cycles through all 3 formats: Light -> Comfort (Calming Off-White) -> Dark -> Light
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => {
+      if (prev === 'light') return 'comfort';
+      if (prev === 'comfort') return 'dark';
+      if (prev === 'dark') return 'light';
+      // If currently on system, advance from resolved
+      return resolvedTheme === 'dark' ? 'light' : resolvedTheme === 'comfort' ? 'dark' : 'comfort';
+    });
   };
 
   return (
@@ -67,4 +78,5 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
+
 

@@ -137,15 +137,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartLearning }) => 
 
           {/* Right Action Controls */}
           <div className="flex items-center gap-2.5">
+            {/* 3-Format Theme Toggle: Crisp Light -> Eye-Care Comfort -> Dark OLED */}
             <button
               onClick={toggleTheme}
               className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-all duration-150 active:scale-95"
-              title="Toggle Light/Dark Theme"
+              title={
+                resolvedTheme === 'light'
+                  ? 'Active: Crisp Light • Click for Comfort Mode (Eye Care)'
+                  : resolvedTheme === 'comfort'
+                  ? 'Active: Comfort Mode (Warm Off-White) • Click for Dark Mode'
+                  : 'Active: Dark Mode (OLED) • Click for Crisp Light Mode'
+              }
             >
               {resolvedTheme === 'dark' ? (
-                <Sun className="w-4 h-4 text-zinc-100" />
+                <Moon className="w-4 h-4 text-zinc-100" />
+              ) : resolvedTheme === 'comfort' ? (
+                <Eye className="w-4 h-4 text-amber-800 dark:text-amber-200" />
               ) : (
-                <Moon className="w-4 h-4 text-zinc-800" />
+                <Sun className="w-4 h-4 text-zinc-800" />
               )}
             </button>
 

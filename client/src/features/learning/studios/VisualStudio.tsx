@@ -138,7 +138,7 @@ export const VisualStudio: React.FC<VisualStudioProps> = ({ diagram }) => {
         if (win.mermaid && !isCancelled) {
           win.mermaid.initialize({
             startOnLoad: false,
-            theme: resolvedTheme === 'dark' ? 'dark' : 'default',
+            theme: resolvedTheme === 'dark' ? 'dark' : resolvedTheme === 'comfort' ? 'neutral' : 'default',
             securityLevel: 'loose',
             fontFamily: 'Inter, sans-serif',
             suppressErrorRendering: true,

@@ -25,6 +25,11 @@
     color: #f4f4f5;
   }
 
+  .comfort body {
+    background-color: #f7f4ed;
+    color: #2b2724;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     letter-spacing: -0.025em;
@@ -116,6 +121,115 @@ pre code {
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   COMFORT THEME: Warm Off-White / Calming Paper Palette (Eye Fatigue Relief)
+   ========================================================================== */
+.comfort {
+  color-scheme: light;
+}
+
+.comfort ::selection {
+  background: #e4d8c6;
+  color: #26211c;
+}
+
+.comfort * {
+  border-color: rgba(226, 218, 204, 0.95);
+}
+
+.comfort body {
+  background-color: #f7f4ed !important;
+  color: #2b2724 !important;
+}
+
+/* Custom Scrollbars in Comfort Mode */
+.comfort ::-webkit-scrollbar-thumb {
+  background: rgba(180, 168, 150, 0.45);
+}
+
+.comfort ::-webkit-scrollbar-thumb:hover {
+  background: rgba(160, 146, 126, 0.65);
+}
+
+/* Surfaces and Cards */
+.comfort .bg-white,
+.comfort [class*="bg-white/"] {
+  background-color: #fdfbf7 !important;
+}
+
+.comfort .bg-zinc-50,
+.comfort .bg-zinc-50\/40,
+.comfort .bg-zinc-50\/70,
+.comfort [class*="bg-zinc-50"] {
+  background-color: #f4efe6 !important;
+}
+
+.comfort .bg-zinc-100,
+.comfort [class*="bg-zinc-100"] {
+  background-color: #ece5d8 !important;
+}
+
+.comfort .hover\:bg-zinc-100:hover,
+.comfort .hover\:bg-zinc-50:hover {
+  background-color: #e5ded0 !important;
+}
+
+/* Primary High-Contrast Buttons */
+.comfort .bg-zinc-950,
+.comfort [class*="bg-zinc-950"] {
+  background-color: #2d2722 !important;
+  color: #fdfbf7 !important;
+}
+
+.comfort .hover\:bg-zinc-800:hover,
+.comfort [class*="hover:bg-zinc-800"]:hover {
+  background-color: #3d352f !important;
+}
+
+/* Text Hierarchy */
+.comfort .text-zinc-950,
+.comfort .text-zinc-900 {
+  color: #26221f !important;
+}
+
+.comfort .text-zinc-800,
+.comfort .text-zinc-700 {
+  color: #423c36 !important;
+}
+
+.comfort .text-zinc-600,
+.comfort .text-zinc-500 {
+  color: #6b645c !important;
+}
+
+.comfort .text-zinc-400 {
+  color: #8f867c !important;
+}
+
+/* Hairline Borders */
+.comfort .border-zinc-200,
+.comfort .border-zinc-100,
+.comfort [class*="border-zinc-200"],
+.comfort [class*="border-zinc-100"] {
+  border-color: #e2dcce !important;
+}
+
+/* Code & Pre Blocks */
+.comfort pre,
+.comfort code {
+  background-color: #eee7db !important;
+  color: #26211c !important;
+  border-color: #ded5c5 !important;
+}
+
+/* Glass Panels */
+.comfort .glass-panel {
+  background: rgba(253, 251, 247, 0.92) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(226, 218, 204, 0.95) !important;
 }
 
 /* Suppress any rogue error containers that 3rd-party libraries (like Mermaid) inject into body */

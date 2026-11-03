@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUserPreferences extends Document {
   userId: mongoose.Types.ObjectId;
-  theme: 'light' | 'dark' | 'system';
+  theme: 'light' | 'comfort' | 'dark' | 'system';
   defaultTier: 'B' | 'A' | 'S';
   preferredMode: 'learn' | 'visualize' | 'code' | 'notes' | 'practice';
   cameraMonitoringConsent: boolean;
@@ -26,7 +26,7 @@ const UserPreferencesSchema = new Schema<IUserPreferences>(
     },
     theme: {
       type: String,
-      enum: ['light', 'dark', 'system'],
+      enum: ['light', 'comfort', 'dark', 'system'],
       default: 'system',
     },
     defaultTier: {

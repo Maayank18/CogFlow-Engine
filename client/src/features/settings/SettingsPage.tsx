@@ -11,6 +11,7 @@ import {
   User,
   Sun,
   Moon,
+  Eye,
   Laptop,
   Shield,
   Cpu,
@@ -152,55 +153,77 @@ export const SettingsPage: React.FC = () => {
 
         {/* Theme & Appearance */}
         <Card className="p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-            Appearance & Interface
-          </h3>
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-zinc-100">
+              Appearance & Theme Formats
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+              Select your optimal viewing format: Crisp Light, Eye-Care Comfort (soothing warm off-white), or True Dark OLED.
+            </p>
+          </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
               type="button"
               onClick={() => setTheme('light')}
-              className={`p-3.5 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all ${
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 text-xs transition-all ${
                 theme === 'light'
-                  ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                  ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-xs font-bold'
+                  : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400'
               }`}
             >
               <Sun className="w-4 h-4" />
-              <span>Light</span>
+              <span className="font-bold">Light</span>
+              <span className="text-[10px] opacity-70">Crisp White</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTheme('comfort')}
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 text-xs transition-all ${
+                theme === 'comfort'
+                  ? 'bg-[#2d2722] text-[#fdfbf7] border-[#2d2722] shadow-xs font-bold'
+                  : 'bg-[#fbf9f4] border-[#e2dcce] text-[#3a342f] hover:border-[#c5bba8]'
+              }`}
+            >
+              <Eye className="w-4 h-4 text-amber-800" />
+              <span className="font-bold">Comfort</span>
+              <span className="text-[10px] text-zinc-500">Eye-Care Sepia</span>
             </button>
 
             <button
               type="button"
               onClick={() => setTheme('dark')}
-              className={`p-3.5 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all ${
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 text-xs transition-all ${
                 theme === 'dark'
-                  ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                  ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-xs font-bold'
+                  : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400'
               }`}
             >
               <Moon className="w-4 h-4" />
-              <span>Dark</span>
+              <span className="font-bold">Dark</span>
+              <span className="text-[10px] opacity-70">OLED Black</span>
             </button>
 
             <button
               type="button"
               onClick={() => setTheme('system')}
-              className={`p-3.5 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all ${
+              className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 text-xs transition-all ${
                 theme === 'system'
-                  ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-700 dark:text-blue-300'
-                  : 'border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
+                  ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 border-zinc-950 dark:border-white shadow-xs font-bold'
+                  : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400'
               }`}
             >
               <Laptop className="w-4 h-4" />
-              <span>System</span>
+              <span className="font-bold">System</span>
+              <span className="text-[10px] opacity-70">Auto Match</span>
             </button>
           </div>
         </Card>
 
         {/* Default Pedagogical Tier */}
         <Card className="p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-zinc-100">
             Pedagogical Baseline
           </h3>
           <div className="grid grid-cols-3 gap-3">
@@ -211,12 +234,12 @@ export const SettingsPage: React.FC = () => {
                 onClick={() => setDefaultTier(tier)}
                 className={`p-3.5 rounded-xl border text-left transition-all ${
                   defaultTier === tier
-                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30 font-bold'
-                    : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                    ? 'border-zinc-950 bg-zinc-950 text-white dark:border-white dark:bg-white dark:text-zinc-950 font-bold shadow-xs'
+                    : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-400'
                 }`}
               >
                 <span className="text-xs block">Tier {tier}</span>
-                <span className="text-[11px] font-normal text-slate-400">
+                <span className="text-[11px] font-normal opacity-70">
                   {tier === 'B' ? 'Foundations' : tier === 'A' ? 'Core Standard' : 'Advanced Rigor'}
                 </span>
               </button>

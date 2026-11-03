@@ -31,7 +31,7 @@ export const ResetPasswordRequestSchema = z.object({
 });
 
 export const UserPreferencesSchema = z.object({
-  theme: z.enum(['light', 'dark', 'system']).default('system'),
+  theme: z.enum(['light', 'comfort', 'dark', 'system']).default('system'),
   defaultTier: z.enum(['B', 'A', 'S']).default('A'),
   preferredMode: z.enum(['learn', 'visualize', 'code', 'notes', 'practice']).default('learn'),
   cameraMonitoringConsent: z.boolean().default(false),

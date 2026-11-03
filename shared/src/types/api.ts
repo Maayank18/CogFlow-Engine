@@ -31,7 +31,7 @@ export interface UserProfile {
 }
 
 export interface UserPreferencesData {
-  theme: 'light' | 'dark' | 'system';
+  theme: 'light' | 'comfort' | 'dark' | 'system';
   defaultTier: PedagogicalTier;
   preferredMode: PedagogicalMode;
   cameraMonitoringConsent: boolean;
